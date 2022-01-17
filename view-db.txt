@@ -1,0 +1,9 @@
+You are now connected to database "nc_news" as user "rosiev".
+ slug | description 
+------+-------------
+(0 rows)
+
+ username | avatar_url | name 
+----------+------------+------
+(0 rows)
+
