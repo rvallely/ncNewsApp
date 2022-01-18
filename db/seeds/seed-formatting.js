@@ -1,5 +1,6 @@
 exports.formatTopicData = (topicData) => {
     const formattedTopics = topicData.map((topic) => [topic.slug, topic.description]);
+    console.log(formattedTopics, '<<< formatted topics')
     return formattedTopics;
 }
 

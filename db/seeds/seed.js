@@ -34,11 +34,11 @@ const seed = (data) => {
           `CREATE TABLE articles (
             article_id SERIAL PRIMARY KEY,
             title VARCHAR(100) NOT NULL,
-            body TEXT NOT NULL,
-            votes INTEGER NOT NULL DEFAULT 0,
+            body VARCHAR(10000) NOT NULL,
+            votes INTEGER DEFAULT 0,
             topic VARCHAR(50) REFERENCES topics(slug) NOT NULL,
             author VARCHAR(30) REFERENCES users(username) NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP NOT NULL
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
           );`
         )
       })
@@ -48,9 +48,9 @@ const seed = (data) => {
             comment_id SERIAL PRIMARY KEY,
             author VARCHAR(30) REFERENCES users(username) NOT NULL,
             article_id INTEGER REFERENCES articles(article_id) NOT NULL, 
-            votes INTEGER DEFAULT 0 NOT NULL,
-            created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            body TEXT NOT NULL
+            votes INTEGER DEFAULT 0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            body VARCHAR(1000) NOT NULL
           );`
         )
       })
@@ -58,7 +58,7 @@ const seed = (data) => {
         const formattedTopics = formatTopicData(topicData);
         const sql = format(
           `INSERT INTO topics
-          (slug, description) 
+          (slug, description)       
           VALUES %L;`, formattedTopics
         );
         return db.query(sql);
