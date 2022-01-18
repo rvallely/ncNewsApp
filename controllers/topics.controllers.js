@@ -1,4 +1,3 @@
-const { response } = require('express');
 const { selectTopics } = require('../models/topics.models.js');
 
 exports.getTopics = (req, res, next) => {

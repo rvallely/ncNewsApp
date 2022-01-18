@@ -9,9 +9,3 @@ exports.selectTopics = () => {
         return topics;
     });
 }
-/*     return db.query(`SELECT * FROM treasures ORDER BY ${order_by_column} ASC;`)
-        .then(result => {
-            //console.log(result.rows, '<<<ROWS');
-            const treasures = result.rows;
-            return treasures;
-        });    */
