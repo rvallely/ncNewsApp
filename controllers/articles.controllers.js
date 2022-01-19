@@ -1,4 +1,4 @@
-const { selectArticleById, updateArticle, selectArticles } = require('../models/articles.models.js');
+const { selectArticleById, updateArticle, selectArticles, selectComments } = require('../models/articles.models.js');
 
 exports.getArticleById = (req, res, next) => {
     const article_id = req.params.article_id;
@@ -14,10 +14,18 @@ exports.patchArticle = (req, res, next) => {
         res.status(200).send({ updatedArticle: updatedArticle });
     });
 }
-
+// NEED TO FINSIH GET ARTICLES WITH COMMENT COUNT 
 exports.getArticles = (req, res, next) => {
     console.log('in get art controller')
     selectArticles().then((articles) => {
+        console.log(articles, '<<< back in controller')
         res.status(200).send({ articles: articles })
+    });
+}
+
+exports.getCommentsForArticleId = (req, res, next) => {
+    const article_id = req.params.article_id
+    selectComments(article_id).then((comments) => {
+        res.status(200).send({ comments : comments });
     });
 }

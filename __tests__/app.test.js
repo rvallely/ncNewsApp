@@ -7,6 +7,30 @@ const  seed  = require('../db/seeds/seed.js');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
+describe('/api/comments', () => {
+    describe('GET', () => {
+        test('Responds with status 200 and an array of all comments available. Each comment has properties:\n        - comment_id\n        - author\n        - article_id\n        - votes\n        - created_at\n        - body.', () => {
+        return request(app)
+          .get('/api/comments')
+          .expect(200)
+          .then((response) => {
+              console.log(response.body.comments, '<<< comments')
+              const comments = response.body.comments
+              expect(comments.length).toBe(18);
+              comments.forEach(function(comment) {
+                  expect(comment).toMatchObject({
+                      comment_id: expect.any(Number), 
+                      author: expect.any(String), 
+                      article_id: expect.any(Number), 
+                      votes: expect.any(Number),
+                      created_at: expect.any(String), 
+                      body: expect.any(String)
+                  });
+              });
+          });
+        });
+});
+
 describe('/api/topics', () => {
     describe('GET', () => {
         test('Responds with status: 200 and an array of topic objects. Each object should have properties:\n        - slug\n        - description.', () => {
@@ -29,7 +53,7 @@ describe('/api/topics', () => {
 
 describe('/api/articles/:article_id', () => {
     describe('GET', () => {
-        test('Responds with an article object which has the properties \n        - author\n        - title\n        - article_id\n        - body\n        - topic\n        - created_at\n        - votes\n        - comment_count.', () => {
+        test('Responds with a status and an article object which has the properties \n        - author\n        - title\n        - article_id\n        - body\n        - topic\n        - created_at\n        - votes\n        - comment_count.', () => {
             const articleId = 3;
             return request(app)
               .get(`/api/articles/${articleId}`)
@@ -108,12 +132,14 @@ describe('/api/articles/:article_id', () => {
 
 describe('/api/articles', () => {
     describe('GET', () => {
-        test('Responds with an array of article objects. Each article object should have the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count', () => {
+        test('Responds with status 200 and an array of article objects. Each article object should have the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count', () => {
             return request(app)
               .get('/api/articles/')
               .expect(200)
               .then((response) => { 
+                  
                   const articles = response.body.articles;
+                  console.log(articles);
                   expect(Array.isArray(articles)).toBe(true);
                   articles.forEach((article) => {
                       expect(article).toMatchObject({
@@ -133,3 +159,62 @@ describe('/api/articles', () => {
     });
 });
 
+describe('/api/articles/:article_id/comments', () => {
+    describe('GET', () => {
+        test('Responds with a status of 200 and an array of comment objects for the given article id. Each object should have the properties:\n        - comment_id\n        - votes\n        - created_at\n        - author\n        - body.', () => {
+            const article_id = 9;
+            return request(app)
+              .get(`/api/articles/${article_id}/comments`)
+              .expect(200)
+              .then((response) => {
+                console.log(response.body.comments)
+                const comments = response.body.comments
+                comments.forEach(function(comment) {
+                    expect(comment).toMatchObject({
+                    comment_id: expect.any(Number),
+                    votes: expect.any(Number),
+                    created_at: (expect.any(String)),
+                    author: expect.any(String),
+                    body: expect.any(String)
+                    });
+                });
+              });
+        });
+    });
+    describe('POST', () => {
+        test.only('Responds with a posted comment object and posts new comment.', () => {
+            const article_id = 10;
+            const newComment = { 
+                body: 'Test comment.',
+                username: 'butter_bridge',
+            }
+            let commentNumberBefore = undefined;
+            let getAllCommentsBefore = request(app).get('/api/comments').then((res) => {
+                commentNumberBefore = res.body.comments.length;
+            });
+            return request(app)
+              .post(`/api/articles/${article_id}/comments`)
+              .expect(201)
+              .send(newComment)
+              .then((response) => {
+                  const postedComment = response.body.comment;
+                  expect(postedComment).toMatchObject({ 
+                      comment_id: 19,
+                      author: 'butter_bridge',
+                      article_id: article_id,
+                      votes: 0,
+                      created_at: expect.any(String),
+                      body: expect.any(String)
+                  });
+                  let commentNumberAfter = undefined;
+                  return request(app)
+                    .get('/api/comments')
+                    .then((res) => {
+                    commentNumberAfter = res.body.comments.length;
+                    expect(commentNumberAfter).toBe(commentNumberBefore + 1);
+                  });
+              });
+        });
+    });
+})
+});

@@ -9,8 +9,8 @@
 
 -- SELECT * FROM topics;
 -- SELECT * FROM users;
-SELECT * FROM articles;
--- SELECT * FROM comments;
+--SELECT * FROM articles;
+SELECT * FROM comments;
 
 
 -- \echo 'article before'
@@ -44,3 +44,9 @@ SELECT * FROM articles;
 -- SELECT * 
 -- FROM articles
 -- WHERE article_id = 4;
+
+--\echo 'comments for each article'
+
+-- SELECT * 
+-- FROM comments
+-- WHERE article_id=9;
