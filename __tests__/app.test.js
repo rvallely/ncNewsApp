@@ -7,30 +7,6 @@ const  seed  = require('../db/seeds/seed.js');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-describe('/api/comments', () => {
-    describe('GET', () => {
-        test('Responds with status 200 and an array of all comments available. Each comment has properties:\n        - comment_id\n        - author\n        - article_id\n        - votes\n        - created_at\n        - body.', () => {
-        return request(app)
-          .get('/api/comments')
-          .expect(200)
-          .then((response) => {
-              console.log(response.body.comments, '<<< comments')
-              const comments = response.body.comments
-              expect(comments.length).toBe(18);
-              comments.forEach(function(comment) {
-                  expect(comment).toMatchObject({
-                      comment_id: expect.any(Number), 
-                      author: expect.any(String), 
-                      article_id: expect.any(Number), 
-                      votes: expect.any(Number),
-                      created_at: expect.any(String), 
-                      body: expect.any(String)
-                  });
-              });
-          });
-        });
-});
-
 describe('/api/topics', () => {
     describe('GET', () => {
         test('Responds with status: 200 and an array of topic objects. Each object should have properties:\n        - slug\n        - description.', () => {
@@ -49,6 +25,29 @@ describe('/api/topics', () => {
             });
         });
     });
+});
+
+describe('/api/comments', () => {
+    describe('GET', () => {
+        test('Responds with status 200 and an array of all comments available. Each comment has properties:\n        - comment_id\n        - author\n        - article_id\n        - votes\n        - created_at\n        - body.', () => {
+        return request(app)
+          .get('/api/comments')
+          .expect(200)
+          .then((response) => {     
+              const comments = response.body.comments
+              expect(comments.length).toBe(18);
+              comments.forEach(function(comment) {
+                  expect(comment).toMatchObject({
+                      comment_id: expect.any(Number), 
+                      author: expect.any(String), 
+                      article_id: expect.any(Number), 
+                      votes: expect.any(Number),
+                      created_at: expect.any(String), 
+                      body: expect.any(String)
+                  });
+              });
+          });
+        });
 });
 
 describe('/api/articles/:article_id', () => {
@@ -114,7 +113,6 @@ describe('/api/articles/:article_id', () => {
               .send(updateVotes)
               .then((response) => {
                   const updatedArticle = response.body.updatedArticle;
-                  console.log(updatedArticle, '<< upda art')
                   expect(updatedArticle).toMatchObject({
                     author: expect.any(String), 
                     title: expect.any(String),
@@ -130,7 +128,7 @@ describe('/api/articles/:article_id', () => {
     });
 });
 
-describe('/api/articles', () => {
+describe.skip('/api/articles', () => {
     describe('GET', () => {
         test('Responds with status 200 and an array of article objects. Each article object should have the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count', () => {
             return request(app)
@@ -159,6 +157,7 @@ describe('/api/articles', () => {
     });
 });
 
+// add when they exist to tests for successful tests
 describe('/api/articles/:article_id/comments', () => {
     describe('GET', () => {
         test('Responds with a status of 200 and an array of comment objects for the given article id. Each object should have the properties:\n        - comment_id\n        - votes\n        - created_at\n        - author\n        - body.', () => {
@@ -167,7 +166,6 @@ describe('/api/articles/:article_id/comments', () => {
               .get(`/api/articles/${article_id}/comments`)
               .expect(200)
               .then((response) => {
-                console.log(response.body.comments)
                 const comments = response.body.comments
                 comments.forEach(function(comment) {
                     expect(comment).toMatchObject({
@@ -182,7 +180,7 @@ describe('/api/articles/:article_id/comments', () => {
         });
     });
     describe('POST', () => {
-        test.only('Responds with a posted comment object and posts new comment.', () => {
+        test('Responds with a posted comment object and posts new comment.', () => {
             const article_id = 10;
             const newComment = { 
                 body: 'Test comment.',
@@ -216,5 +214,61 @@ describe('/api/articles/:article_id/comments', () => {
               });
         });
     });
-})
 });
+});
+
+describe('/api/comments/:comment_id', () => {
+    describe('GET', () => {
+        test('Responds with comment object of given a comment_id, when comment exists.', () => {
+            const comment_id = 7;
+            return request(app)
+              .get(`/api/comments/${comment_id}`)
+              .expect(200)
+              .then((res) => {
+                  const comment = res.body.comment;
+                  //console.log(res.body);
+                  expect(comment).toMatchObject({
+                      comment_id: 7, 
+                      author: 'icellusedkars',
+                      article_id: 1, 
+                      votes: 0, 
+                      created_at: '2020-05-15T20:19:00.000Z', 
+                      body: 'Lobster pot'
+                  });
+              });
+        });
+    });
+    describe('DELETE', () => {
+        test('Responds with status 204 and no content. Deletes comment by comment_id given, when comment exists.', () => {
+            const comment_id = 7;
+            let commentNumberBefore = undefined;
+            let getAllCommentsBefore = request(app).get('/api/comments').then((res) => {
+                commentNumberBefore = res.body.comments.length;
+            });
+            return request(app)
+              .delete(`/api/comments/${comment_id}`)
+              .expect(204)
+              .then((res) => {
+                  expect(res.body).toEqual({});
+                  let commentNumberAfter = undefined;
+                  return request(app)
+                    .get('/api/comments')
+                    .then((res) => {
+                    commentNumberAfter = res.body.comments.length;
+                    expect(commentNumberAfter).toBe(commentNumberBefore - 1);
+                    return request(app).get(`/api/comments/${comment_id}`).then((response) => {
+                        expect(response.body).toEqual({});
+                    });
+                  }); 
+              });
+        });
+    });
+});
+
+describe('/api', () => {
+    decribe('GET', () => {
+        test('Responds with JSON describing all the available endpoints on the API.', () => {
+
+        })
+    })
+})

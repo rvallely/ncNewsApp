@@ -19,12 +19,31 @@ exports.insertComment = (article_id, newComment) => {
 // a new comment in comments if the author was a new author (because if author is not in users this violates the foreign key constraint of comments_author users(username)) 
 
 exports.selectComments = () => {
-    console.log('inside comment mod')
     return db.query(
         `SELECT *
         FROM comments;`
     ).then((result) => {
         const comments = result.rows;
         return comments;
+    });
+}
+
+exports.removeComment = (comment_id) => {
+    return db.query(
+        `DELETE from comments
+        WHERE comment_id = $1`, [comment_id]
+    ).then((result) => {
+        return result.rows;
+    });
+}
+
+exports.selectComment = (comment_id) => {
+    return db.query(
+        `SELECT *
+        FROM comments
+        WHERE comment_id = $1;`, [comment_id]
+    ).then((result) => {
+        const comment = result.rows[0];
+        return comment;
     });
 }

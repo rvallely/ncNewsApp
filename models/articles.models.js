@@ -27,7 +27,6 @@ exports.updateArticle = (article_id, increaseVotesBy) => {
         WHERE article_id = $1
         RETURNING *;`, [article_id, increaseVotesBy])
         .then((result) => {
-            console.log(result.rows[0]);
             const updatedArticle = result.rows[0];
             return updatedArticle;
         });
