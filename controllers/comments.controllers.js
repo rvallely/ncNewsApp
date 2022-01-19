@@ -24,7 +24,6 @@ exports.deleteComment = (req, res, next) => {
 exports.getComment = (req, res, next) => {
     const comment_id = req.params.comment_id;
     selectComment(comment_id).then((comment) => {
-        console.log(comment, '<<< comment')
-        res.status(200).send({ comment: comment })
+        res.status(200).send({ comment: comment });
     });
 }

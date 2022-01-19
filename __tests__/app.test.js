@@ -265,10 +265,13 @@ describe('/api/comments/:comment_id', () => {
     });
 });
 
+// LEFT at point of needing to complete test for GET /api to get JSON of all available endpoints
+// Also need to get GET /api/articles working.
+// Then hosting and tidying up
 describe('/api', () => {
-    decribe('GET', () => {
+    describe('GET', () => {
         test('Responds with JSON describing all the available endpoints on the API.', () => {
 
-        })
-    })
-})
+        });
+    });
+});
