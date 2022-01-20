@@ -49,4 +49,4 @@ SELECT * FROM comments;
 
 SELECT * 
 FROM comments
--- WHERE article_id=9;
+WHERE article_id=7;

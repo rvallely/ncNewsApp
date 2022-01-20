@@ -3,8 +3,6 @@ const { checkArticleIdExists } = require('../utils/utils.js');
 
 exports.getArticleById = (req, res, next) => {
     const article_id = req.params.article_id;
-    console.log('line 6 article controller')
-    // check article_id exists
     return checkArticleIdExists(article_id).then((articleExists) => {
         if (articleExists) {
             // if article exists then go and get the article
@@ -40,7 +38,19 @@ exports.getArticles = (req, res, next) => {
 
 exports.getCommentsForArticleId = (req, res, next) => {
     const article_id = req.params.article_id
-    selectComments(article_id).then((comments) => {
-        res.status(200).send({ comments : comments });
+    return checkArticleIdExists(article_id).then((articleExists) => {
+        if (articleExists) {
+            selectComments(article_id).then((comments) => {
+                res.status(200).send({ comments : comments });
+            });
+        } else {
+            // else if an article doesn't exist throw a custom error
+            console.log('in promise reject ')
+            return Promise.reject({ status: 404, msg: 'Not Found' })
+        }
+    })
+    .catch((err) => {
+        console.log('in article controller catch')
+        next(err);
     });
 }

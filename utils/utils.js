@@ -39,5 +39,14 @@ exports.checkArticleIdExists = (article_id) => {
             return false;
         }
     });
+}
 
+exports.checkCommentKeys = (newComment) => {
+    console.log(newComment, '<<< comm in utils func')
+    if(newComment.hasOwnProperty('body') && newComment.hasOwnProperty('username')) {
+        return true;
+    } else {
+        console.log('false in checking')
+        return false;
+    }
 }

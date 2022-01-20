@@ -24,12 +24,14 @@ exports.handleCustomErrors = (err, req, res, next) => {
 
 
 exports.handleServerErrors = (err, req, res, next) => {
-    console.log('inside handleServerErrors')
+    console.log('<<inside handleServerErrors')
+    console.log(err)
     res.status(500).send({ msg: 'Internal server error' });
 }
 
 exports.handlePsqlErrors = (err, req, res, next) => {
     console.log('in psql error block')
+    
     if(err.code === '22P02') {
         console.log('error code is 22P02')
         res.status(400).send({ msg: 'Bad Request' });
