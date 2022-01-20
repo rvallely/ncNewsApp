@@ -352,6 +352,7 @@ describe('/api/articles/:article_id/comments', () => {
         // LEFT HERE to do remaing error handling for 
         //       - extra field
         //       - incorrect data types for each field
+        //    WANT TO MAKE UTIL tests for post, patch, delete. check length in more controlled way
 
 /*        test.only('Responds with a status of 400 and returns a \'Bad Request: incorrect data type\' error message if comment contains incorrect data type.', () => {
             const article_id = 4;
