@@ -2,6 +2,9 @@ const db = require('../db/connection.js');
 const comments = require('../db/data/test-data/comments.js');
 
 exports.selectArticleById = (article_id) => {
+    //console.log(typeof article_id, '<<<article_id ')
+    // if article_id isn't a number above 0 it is invalid 
+    // 
     return db.query(
         `SELECT * 
         FROM articles
@@ -32,103 +35,67 @@ exports.updateArticle = (article_id, increaseVotesBy) => {
         });
 }
 
-exports.selectArticles = () => {
-    let count = 0;
-  return db.query(
+/*exports.selectArticles = () => {
+    
+    return db.query(
       `SELECT author, title, article_id, topic, created_at, votes
       FROM articles
       ;`
-  ).then((result) => {
+    ).then((result) => {
       let articles = result.rows
-      //console.log(articles);
-      // getting all the articles
-      
-      articles.forEach(function(article, index) {
-        let article_id = article.article_id;
-          console.log(article_id, '<<< id at top')
-          
+    let count = 0;  
+    articles.forEach((article) => {
+          const article_id = article.article_id;
           return db.query(
-            `SELECT * FROM comments
-            WHERE article_id=${article_id}`
-          ).then((result) => {
-            count +=1;
-            //console.log(article_id, '<<< art id')
-            //console.log(result.rows.length)
-            const comment_count = result.rows.length;
-            article.comment_count = comment_count;
-            console.log(count, '<<< count')
-            if(count === 11) {
-                return articles;
-            }
-        });
-       
-        
-
-      });
-      //console.log(article_ids, '<<< all ids')
-     
-        //getting all the article_ids
-      /*  return db.query(
-            `SELECT * FROM comments
-            WHERE article_id=$1;`, [article_id]
-        ).then((result) => {
-            console.log(result.rows, '<< arti id form comments')
-            // console.log(article_id, '<<< art id')
-            //console.log(result.rows, '<<<result')
-            
-            //console.log(result.rows);
-            //console.log(result.rows.length, '<<<is the length');
-            //console.log(`${article_id} ${result.rows} ${result.rows.length}`)
-            //console.log(articles, '<<< articles line 60')
-            //const comment_count = result.rows.length;
-            //article.comment_count = comment_count;
-            //console.log('article')
-            //console.log(article)
-            //console.log(index, '<<< index');
-            //console.log(count, '<<< count')
-          });   
-
-      })*/
-      
-
-
-
-
-
-
-
-
-
-
-
-
-
-      
-      /*articles.forEach(function(article) {
-          delete article.body;
-          let article_id = article.article_id;
-          return db.query(
-              `SELECT * FROM comments
-              WHERE article_id=$1;`, [article_id]
-          ).then((result) => {
-              count += 1;
-              //console.log(article_id)
-              //console.log(result.rows);
-              //console.log(result.rows.length, '<<<is the length');
-              //console.log(`${article_id} ${result.rows} ${result.rows.length}`)
-              //console.log(articles, '<<< articles line 60')
-              const comment_count = result.rows.length;
+              `SELECT *
+              FROM comments
+              WHERE article_id = $1;`, [12]
+          ).then((res) => {
+              console.log(article_id, '<<< id')
+              const comment_count = res.rows.length;
               article.comment_count = comment_count;
-              if (count === 12) {
-                console.log(articles, '<<< finidhed articles')
-              }
-          //return articles;
+              //count += 1;
+              //if (count === 11) {
+                  console.log(articles, '<<< articles at 11')
+              //}
+
+          });
       });
-      //return articles;
     });
-   // console.log(articles);*/
-});
+}*/
+
+exports.selectArticles = () => {
+    let count = 0;
+    let obj = {};
+    const ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];  
+    // const id1 = ids[0]
+    // const id12= ids[11];
+    ids.forEach((id) => {
+    // console.log(id, '<<< id before query')
+    return db.query(
+        `SELECT *
+        FROM comments
+        WHERE article_id = $1`, [id]
+    ).then((res) => {
+        console.log(id, '<<< id after query')
+        count += 1;
+        //console.log(id, '<<id');  //comms>> ', res.rows.length
+        obj[id] = res.rows.length;
+        if(count === 11) {
+            console.log(obj);
+        }
+    })    
+  });
 }
+
+   //   console.log(articles, '<<< articles')
+    // for each article in articles(12) 
+    // make a request to the server and get all the comments for each each article_id
+    // get length of rows a
+    // assign this length as article.comment_count 
+    // for each article
+    // then return array once all 12 have had comment_count added
+
 
 exports.selectComments = (article_id ) => {
     return db.query(
