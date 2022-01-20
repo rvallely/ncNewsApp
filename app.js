@@ -5,7 +5,7 @@ const { getArticleById, patchArticle, getArticles, getCommentsForArticleId } = r
 const { postComment, getComments, deleteComment, getComment } = require('./controllers/comments.controllers.js');
 const { getEndpoints } = require('./controllers/endpoints.controllers.js');
 //const {handlePsqlErrors, handleServerErrors, handleCustomErrors, handle404s } = require('./errors.erros.js');
-const { handle404s, handleCustomErrors } = require('./errors/errors');
+const { handle404s, handleCustomErrors, handleServerErrors, handlePsqlErrors } = require('./errors/errors');
 
 app.use(express.json());
 
@@ -24,9 +24,13 @@ app.get('/api', getEndpoints);
 app.all('*', handle404s);
 // catch all - will match any method that hasn't been matched yet with any path that hasn't been matched yet and send out 404
 
-//app.use(handlePsqlErrors);
-//app.use(handleServerErrors);
+
+
+// Each app.use(middleware) is called every time a request is sent to the server.
+// order matters! it seems to run each of these error handlings (top - bottom) funcs and check if condition is met. if not met, goes to the next one.
 app.use(handleCustomErrors);
+app.use(handlePsqlErrors);
+app.use(handleServerErrors);
 app.use(handle404s);
 
 module.exports = app;

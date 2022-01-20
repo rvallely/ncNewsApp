@@ -7,17 +7,16 @@ const  seed  = require('../db/seeds/seed.js');
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
-// BELOW is example copied from lecture - remove or edit as appropriate
 describe('/invalid_url', () => {
     test('Responds with status 404 and message \'Invalid URL\'', () => {
         return request(app)
-          .get('invalid_url')
+          .get('/invalid_url')
           .expect(404)
           .then((res) => {
               expect(res.body.msg).toBe('Invalid URL');
           });
-    })
-})
+    });
+});
 
 describe('/api/topics', () => {
     describe('GET', () => {
@@ -64,7 +63,7 @@ describe('/api/comments', () => {
 
 describe('/api/articles/:article_id', () => {
     describe('GET', () => {
-        test.only('Responds with status 200 and an article object which has the properties \n        - author\n        - title\n        - article_id\n        - body\n        - topic\n        - created_at\n        - votes\n        - comment_count.', () => {
+        test('Responds with status 200 and an article object which has the properties \n        - author\n        - title\n        - article_id\n        - body\n        - topic\n        - created_at\n        - votes\n        - comment_count.', () => {
             const articleId = 3;
             return request(app)
               .get(`/api/articles/${articleId}`)
@@ -84,10 +83,7 @@ describe('/api/articles/:article_id', () => {
                   });
               });
         });
-        //LECTURE  ----
-        // below is the test for invalid article id (not a number, or number<0)
-        // possibly taken care of this in building db as specified only allow numbers
-        test('Responds with status 400 and returns an \'Bad Request\' error message', () => {
+        test('Responds with status 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is the wrong data type.', () => {
             const invalid_article_id = 'two';
             return request(app)
               .get(`/api/articles/${invalid_article_id }`)
@@ -96,17 +92,24 @@ describe('/api/articles/:article_id', () => {
                   expect(res.body.msg).toBe('Bad Request');
               });
         }); 
-        test.only('Responds with status 404 and returns an \'Bad Request\' error message', () => {
+        test('Responds with status 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is a number below 1.', () => {
+            const invalid_article_id = -1;
+            return request(app)
+              .get(`/api/articles/${invalid_article_id}`)
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request');
+              });
+        }); 
+        test('Responds with status 404 and returns an \'Not Found\' error message, if article_id is valid, because it is a number >= 1, but doesn\'t yet exist.', () => {
             const article_id = 1000;
             return request(app)
-              // valid article id, but doesn't exist yet (a number > 0)
               .get(`/api/articles/${article_id}`)
               .expect(404)
               .then((res) => {
-                  expect(res.body.msg).toBe('Not found');
+                  expect(res.body.msg).toBe('Not Found');
               });
         }); 
-        //LECTURE NOTES END -----
     });
     describe('PATCH', () => {
         test('Responds with an updated article object, when votes to increase by is positive.' , () => {

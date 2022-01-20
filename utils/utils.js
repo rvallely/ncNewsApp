@@ -20,6 +20,11 @@ const db = require('../db/connection.js');
 
 
 exports.checkArticleIdExists = (article_id) => {
+    console.log('checking article exists')
+    console.log(article_id, 'id')
+    if (article_id < 1) {
+        article_id = 'Invalid article_id: id is below one';
+    }
     return db.query(
         `SELECT * FROM articles
         WHERE article_id = $1`, [article_id]
@@ -27,8 +32,10 @@ exports.checkArticleIdExists = (article_id) => {
         console.log(result.rows, '<<< rows');
         console.log(result.rows.length)
         if (result.rows.length > 0) {
+            console.log('true')
             return true;
         } else {
+            console.log('false')
             return false;
         }
     });
