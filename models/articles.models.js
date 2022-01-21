@@ -2,9 +2,6 @@ const db = require('../db/connection.js');
 const comments = require('../db/data/test-data/comments.js');
 
 exports.selectArticleById = (article_id) => {
-    //console.log(typeof article_id, '<<<article_id ')
-    // if article_id isn't a number above 0 it is invalid 
-    // 
     return db.query(
         `SELECT * 
         FROM articles

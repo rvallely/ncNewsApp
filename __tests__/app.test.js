@@ -112,34 +112,36 @@ describe('/api/articles/:article_id', () => {
         }); 
     });
 
-    // ***************** error handling
     describe('PATCH', () => {
-        test('Responds with an updated article object, when votes to increase by is positive.' , () => {
+        test('Responds with a status of 200 and an updated article object, when inc_votes is positive.' , () => {
             const articleId = 5;
             let votesBefore = undefined;
             const updateVotes = { inc_votes : 20 };
-            const articleBefore = request(app).get(`/api/articles/${articleId}`).then((res)=> {
+            return request(app).get(`/api/articles/${articleId}`).then((res)=> {
                 votesBefore = res.body.article.votes;
+                console.log(votesBefore)
+                return request(app)
+                  .patch(`/api/articles/${articleId}`)
+                  .expect(200)
+                  .send(updateVotes)
+                  .then((response) => {
+                    const updatedArticle = response.body.updatedArticle;
+                    expect(updatedArticle).toMatchObject({
+                      author: expect.any(String), 
+                      title: expect.any(String),
+                      article_id: expect.any(Number),
+                      body: expect.any(String),
+                      topic: expect.any(String),
+                      created_at: expect.any(String),
+                      votes: expect.any(Number)
+                    });
+                    expect(updatedArticle.votes).toBe(votesBefore + updateVotes.inc_votes);
+                    console.log(votesBefore + updateVotes.inc_votes)
+                  });
             });
-            return request(app)
-              .patch(`/api/articles/${articleId}`)
-              .expect(200)
-              .send(updateVotes)
-              .then((response) => {
-                  const updatedArticle = response.body.updatedArticle;
-                  expect(updatedArticle).toMatchObject({
-                    author: expect.any(String), 
-                    title: expect.any(String),
-                    article_id: expect.any(Number),
-                    body: expect.any(String),
-                    topic: expect.any(String),
-                    created_at: expect.any(String),
-                    votes: expect.any(Number)
-                });
-                expect(updatedArticle.votes).toBe(votesBefore + updateVotes.inc_votes);
-            });
+            
         });
-        test('Responds with an updated article object, when votes to increase by is negative.' , () => {
+        test('Responds with a status of 200 and an updated article object, when inc_votes is negative.' , () => {
             const articleId = 4;
             let votesBefore = undefined;
             const updateVotes = { inc_votes : -15 };
@@ -165,10 +167,93 @@ describe('/api/articles/:article_id', () => {
                 //-->expect(updatedArticle.votes).toBe(votesBefore + -15);
               });
         });
+        test('Responds with a status of 200 and an updated article object, when the request body has inc_votes and extra fields.' , () => {
+            const articleId = 5;
+            const updateVotes = { inc_votes : 135 , voters: ['a', 'b', 'c'] };
+            return request(app).get(`/api/articles/${articleId}`).then((res)=> {
+                votesBefore = res.body.article.votes;
+                console.log(votesBefore)
+                return request(app)
+                  .patch(`/api/articles/${articleId}`)
+                  .expect(200)
+                  .send(updateVotes)
+                  .then((response) => {
+                    const updatedArticle = response.body.updatedArticle;
+                    expect(updatedArticle).toMatchObject({
+                      author: expect.any(String), 
+                      title: expect.any(String),
+                      article_id: expect.any(Number),
+                      body: expect.any(String),
+                      topic: expect.any(String),
+                      created_at: expect.any(String),
+                      votes: expect.any(Number)
+                    });
+                    expect(updatedArticle.votes).toBe(votesBefore + updateVotes.inc_votes);
+                    console.log(votesBefore + updateVotes.inc_votes)
+                  });
+            });
+        });
+        test('Responds with a status of 400 and a \'Bad Request: missing field(s) or incorrect data type\' error message when required inc_votes field is missing.', (
+        ) => {
+            const articleId = 5;
+            const updateVotes = { likes: 52 , voters: ['a', 'b', 'c'] };
+            return request(app)
+              .patch(`/api/articles/${articleId}`)
+              .expect(400)
+              .send(updateVotes)
+              .then((res)=> {
+                  expect(res.body.msg).toBe('Bad Request: missing field(s) or incorrect data type');
+              });
+        });
+        test('Responds with a status of 400 and a \'Bad Request: missing field(s) or incorrect data type\' error message when required inc_votes field\'s value has the wrong data type.', () => {
+            const articleId = 5;
+            const updateVotes = { inc_votes: 'fifty'};
+            return request(app)
+              .patch(`/api/articles/${articleId}`)
+              .send(updateVotes)
+              .expect(400)
+              .then((res)=> {
+                expect(res.body.msg).toBe('Bad Request: missing field(s) or incorrect data type');
+              });
+                  
+        });
+        test('Responds with a status of 400 and a \'Bad Request\' error message when article_id is not a number >= 1.', () => {
+            const articleId = -20;
+            const updateVotes = { inc_votes: 50};
+            return request(app)
+              .patch(`/api/articles/${articleId}`)
+              .send(updateVotes)
+              .expect(400)
+              .then((res)=> {
+                expect(res.body.msg).toBe('Bad Request');
+              });      
+        });
+        test('Responds with a status of 400 and a \'Bad Request\' error message when article_id is not a number >= 1.', () => {
+            const articleId = 'fifty';
+            const updateVotes = { inc_votes: 50};
+            return request(app)
+              .patch(`/api/articles/${articleId}`)
+              .send(updateVotes)
+              .expect(400)
+              .then((res)=> {
+                expect(res.body.msg).toBe('Bad Request');
+              });      
+        });
+        test('Responds with a status of 404 and a \'Not Found\' error message when article_id is a number >= 1, but does not exist.', () => {
+            const articleId = 55;
+            const updateVotes = { inc_votes: 50};
+            return request(app)
+              .patch(`/api/articles/${articleId}`)
+              .send(updateVotes)
+              .expect(404)
+              .then((res)=> {
+                expect(res.body.msg).toBe('Not Found');
+              });      
+        });            
     });
 });
 
-// ************** need to get working 
+// -------> need to get working 
 describe.skip('/api/articles', () => {
     describe('GET', () => {
         test('Responds with status 200 and an array of article objects. Each article object should have the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count', () => {
@@ -347,15 +432,38 @@ describe('/api/articles/:article_id/comments', () => {
                 expect(res.body.msg).toBe('Bad Request: missing field(s)');
             });
         });
-        test('Responds with a status of 400 and returns a ')
-
+        test('Responds with a status of 201 and a posted comment object with extra fields omitted, when the comment has username and body properties and extra fields.', () => {
+            const article_id = 10;
+            const newComment = { 
+                body: 'Test comment.',
+                username: 'butter_bridge',
+                likes: 10000, 
+            }
+            return request(app)
+              .post(`/api/articles/${article_id}/comments`)
+              .send(newComment)
+              .expect(201)
+              .then((res) => {
+                const postedComment = res.body.comment;
+                expect(postedComment).toMatchObject({ 
+                    comment_id: 19,
+                    author: 'butter_bridge',
+                    article_id: 10,
+                    votes: 0,
+                    created_at: expect.any(String),
+                    body: 'Test comment.'
+                });
+              });
+        });
+        // would need to adapt and insert into users and potentially other tables before being able to insert(post)
+// a new comment in comments if the author was a new author (because if author is not in users this violates the foreign key constraint of comments_author users(username)) 
         // LEFT HERE to do remaing error handling for 
-        //       - extra field
         //       - incorrect data types for each field
         //    WANT TO MAKE UTIL tests for post, patch, delete. check length in more controlled way
+        // think can just do this by querying the data base from the test file
     });
 });
-});
+
 
 describe('/api/comments/:comment_id', () => {
     describe('GET', () => {
@@ -421,8 +529,8 @@ describe('/api/comments/:comment_id', () => {
                       .get('/api/comments')
                       .then((res) => {
                         commentNumberAfter = res.body.comments.length;
-                        expect(commentNumberAfter).toBe(commentNumberBefore - 1);
-                      });
+                        expect(commentNumberAfter).toBe(commentNumberBefore - 1)
+                    });            
                   }); 
             });
         });
@@ -455,10 +563,11 @@ describe('/api/comments/:comment_id', () => {
         });
     });
 });
-
+});
 // need to complete test for GET /api to get JSON of all available endpoints
 // Also need to get GET /api/articles working.
 // Then hosting and tidying up
+// ************** need to get working 
 
 /*describe('/api', () => {
     describe('GET', () => {
@@ -469,6 +578,6 @@ describe('/api/comments/:comment_id', () => {
               .then((response) => {
                   //
               });
-        });
+        }); 
     });
 }); */
