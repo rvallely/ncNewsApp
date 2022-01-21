@@ -18,8 +18,6 @@ describe('/invalid_url', () => {
     });
 });
 
-// not sure at this point what the errors would be with below
-// should I delete everything from topics to check if there's a custom error for if there's no content?
 describe('/api/topics', () => {
     describe('GET', () => {
         test('Responds with status: 200 and an array of topic objects. Each object should have properties:\n        - slug\n        - description.', () => {
@@ -40,7 +38,6 @@ describe('/api/topics', () => {
     });
 });
 
-// same as comments above GET /api/topics here
 describe('/api/comments', () => {
     describe('GET', () => {
         test('Responds with status 200 and an array of all comments available. Each comment has properties:\n        - comment_id\n        - author\n        - article_id\n        - votes\n        - created_at\n        - body.', () => {
@@ -114,6 +111,8 @@ describe('/api/articles/:article_id', () => {
               });
         }); 
     });
+
+    // ***************** error handling
     describe('PATCH', () => {
         test('Responds with an updated article object, when votes to increase by is positive.' , () => {
             const articleId = 5;
@@ -169,6 +168,7 @@ describe('/api/articles/:article_id', () => {
     });
 });
 
+// ************** need to get working 
 describe.skip('/api/articles', () => {
     describe('GET', () => {
         test('Responds with status 200 and an array of article objects. Each article object should have the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count', () => {
@@ -198,7 +198,6 @@ describe.skip('/api/articles', () => {
     });
 });
 
-// add when they exist to tests for successful tests
 describe('/api/articles/:article_id/comments', () => {
     describe('GET', () => {
         test('Responds with a status of 200 and an array of comment objects for the given article id, when article_id has at least one comment. Each object should have the properties:\n        - comment_id\n        - votes\n        - created_at\n        - author\n        - body.', () => {
@@ -293,7 +292,7 @@ describe('/api/articles/:article_id/comments', () => {
                   });
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request: invalid article_id\' error message, if article_id is invalid because it is the wrong data type.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is the wrong data type.', () => {
             const invalid_id = 'two';
             const newComment = { 
                 body: 'Test comment.',
@@ -307,7 +306,7 @@ describe('/api/articles/:article_id/comments', () => {
                   expect(res.body.msg).toBe('Bad Request');
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request: invalid article_id\' error message, if article_id is invalid because it is a number below 1.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is a number below 1.', () => {
             const invalid_id = 0;
             const newComment = { 
                 body: 'Test comment.',
@@ -345,29 +344,15 @@ describe('/api/articles/:article_id/comments', () => {
             .send(newComment)
             .expect(400)
             .then((res) => {
-                console.log(res.body, '<< test res bod')
                 expect(res.body.msg).toBe('Bad Request: missing field(s)');
             });
         });
+        test('Responds with a status of 400 and returns a ')
+
         // LEFT HERE to do remaing error handling for 
         //       - extra field
         //       - incorrect data types for each field
         //    WANT TO MAKE UTIL tests for post, patch, delete. check length in more controlled way
-
-/*        test.only('Responds with a status of 400 and returns a \'Bad Request: incorrect data type\' error message if comment contains incorrect data type.', () => {
-            const article_id = 4;
-            const newComment = { 
-                body: 'test comment',
-                username: 234,
-            }
-            return request(app)
-              .post(`/api/articles/${article_id}/comments`)
-              .send(newComment)
-              .expect(400)
-              .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request: incorrect data type');
-              });
-        }) */
     });
 });
 });
@@ -392,29 +377,80 @@ describe('/api/comments/:comment_id', () => {
                   });
               });
         });
+        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if comment_id is invalid because it is a number below 1.', () => {
+            const comment_id = -2;
+            return request(app)
+              .get(`/api/comments/${comment_id}`)
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request');
+              });
+        });
+        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if comment_id is invalid because it is the wrong data type.', () => {
+            const comment_id = 'three';
+            return request(app)
+              .get(`/api/comments/${comment_id}`)
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request');
+              });
+        });
+        test('Responds with a status of 404 and returns a \'Not Found\' error message, if comment_id is valid because it is a number >= 1, but doesn\'t yet exist.', () => {
+            const comment_id = 600;
+            return request(app)
+              .get(`/api/comments/${comment_id}`)
+              .expect(404)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Not Found');
+              });
+        });
     });
     describe('DELETE', () => {
         test('Responds with status 204 and no content. Deletes comment by comment_id given, when comment exists.', () => {
             const comment_id = 7;
             let commentNumberBefore = undefined;
-            let getAllCommentsBefore = request(app).get('/api/comments').then((res) => {
+            return request(app).get('/api/comments').then((res) => {
                 commentNumberBefore = res.body.comments.length;
+                return request(app)
+                  .delete(`/api/comments/${comment_id}`)
+                  .expect(204)
+                  .then((res) => {
+                    expect(res.body).toEqual({});
+                    let commentNumberAfter = undefined;
+                    return request(app)
+                      .get('/api/comments')
+                      .then((res) => {
+                        commentNumberAfter = res.body.comments.length;
+                        expect(commentNumberAfter).toBe(commentNumberBefore - 1);
+                      });
+                  }); 
             });
+        });
+        test('Responds with a status of 400 and \'Bad Request\' error message if the comment_id is invalid because it is a number < 1.', () => {
+            const comment_id = -17;
             return request(app)
               .delete(`/api/comments/${comment_id}`)
-              .expect(204)
+              .expect(400)
               .then((res) => {
-                  expect(res.body).toEqual({});
-                  let commentNumberAfter = undefined;
-                  return request(app)
-                    .get('/api/comments')
-                    .then((res) => {
-                    commentNumberAfter = res.body.comments.length;
-                    expect(commentNumberAfter).toBe(commentNumberBefore - 1);
-                    return request(app).get(`/api/comments/${comment_id}`).then((response) => {
-                        expect(response.body).toEqual({});
-                    });
-                  }); 
+                  expect(res.body.msg).toBe('Bad Request')
+              });
+        });
+        test('Responds with a status of 400 and \'Bad Request\' error message if the comment_id is invalid because it is the wrong data type.', () => {
+            const comment_id = { comment_id: 3 };
+            return request(app)
+              .delete(`/api/comments/${comment_id}`)
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request')
+              });
+        });
+        test('Responds with a status of 404 and \'Not Found\' error message if the comment_id is valid because it is a number >= 1, but does not exist.', () => {
+            const comment_id = 20;
+            return request(app)
+              .delete(`/api/comments/${comment_id}`)
+              .expect(404)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Not Found')
               });
         });
     });

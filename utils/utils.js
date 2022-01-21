@@ -23,7 +23,7 @@ exports.checkArticleIdExists = (article_id) => {
     console.log('checking article exists')
     console.log(article_id, 'id')
     if (article_id < 1) {
-        article_id = 'Invalid article_id: id is below one';
+        article_id = 'Invalid article_id';
     }
     return db.query(
         `SELECT * FROM articles
@@ -49,4 +49,24 @@ exports.checkCommentKeys = (newComment) => {
         console.log('false in checking')
         return false;
     }
+}
+
+exports.checkCommentExists = (comment_id) => {
+    if (comment_id < 1) {
+        comment_id = 'Invalid comment id';
+    }
+    return db.query(
+        `SELECT * FROM comments
+        WHERE comment_id = $1`, [comment_id]
+    ).then((result) => {
+        console.log(result.rows, '<<< rows');
+        console.log(result.rows.length)
+        if (result.rows.length > 0) {
+            console.log('true')
+            return true;
+        } else {
+            console.log('false')
+            return false;
+        }
+    });
 }

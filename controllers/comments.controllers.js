@@ -1,5 +1,5 @@
 const { insertComment, selectComments, removeComment, selectComment } = require('../models/comments.models.js');
-const { checkArticleIdExists, checkCommentKeys } = require('../utils/utils.js');
+const { checkArticleIdExists, checkCommentKeys, checkCommentExists } = require('../utils/utils.js');
 
 exports.postComment = (req, res, next) => {
     const article_id = req.params.article_id;
@@ -9,7 +9,7 @@ exports.postComment = (req, res, next) => {
     // check has both username and body properties before check whether id exists 
     const bothKeysPresent = checkCommentKeys(newComment) 
         if (bothKeysPresent) {
-            console.log('both keys present')
+
             return checkArticleIdExists(article_id).then((articleExists) => {
                 if (articleExists) {
                     insertComment(article_id, newComment).then((comment) => {
@@ -30,9 +30,6 @@ exports.postComment = (req, res, next) => {
                 next(err);
             });  
         } 
-     
-
-
 }
 
 exports.getComments = (req, res, next) => {
@@ -43,14 +40,32 @@ exports.getComments = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
     const comment_id = req.params.comment_id;
-    removeComment(comment_id).then((comment) => {
-        res.status(204).send(comment);
-    })
+    return checkCommentExists(comment_id).then((commentExists) => {
+        if(commentExists) {
+            removeComment(comment_id).then((comment) => {
+                res.status(204).send(comment);
+            })
+        } else {
+            return Promise.reject({ status: 404, msg: 'Not Found' });
+        }
+    })    
+    .catch((err) => {
+        next(err);
+    });
 }
 
 exports.getComment = (req, res, next) => {
     const comment_id = req.params.comment_id;
-    selectComment(comment_id).then((comment) => {
-        res.status(200).send({ comment: comment });
+    return checkCommentExists(comment_id).then((commentExists) => {
+        if(commentExists) {
+            selectComment(comment_id).then((comment) => {
+                res.status(200).send({ comment: comment });
+            });
+        } else {
+            return Promise.reject({ status: 404, msg: 'Not Found' });
+        }
+    })            
+    .catch((err) => {
+        next(err);
     });
 }

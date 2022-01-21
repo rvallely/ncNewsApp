@@ -48,5 +48,4 @@ SELECT * FROM comments;
 --\echo 'comments for each article'
 
 SELECT * 
-FROM comments
-WHERE article_id=7;
+FROM comments;
