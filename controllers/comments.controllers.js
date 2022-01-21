@@ -6,7 +6,6 @@ exports.postComment = (req, res, next) => {
     const newComment = req.body;
     const bothKeysPresent = checkCommentKeys(newComment) 
         if (bothKeysPresent) {
-
             return checkArticleIdExists(article_id).then((articleExists) => {
                 if (articleExists) {
                     insertComment(article_id, newComment).then((comment) => {

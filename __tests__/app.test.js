@@ -455,12 +455,42 @@ describe('/api/articles/:article_id/comments', () => {
                 });
               });
         });
-        // would need to adapt and insert into users and potentially other tables before being able to insert(post)
-// a new comment in comments if the author was a new author (because if author is not in users this violates the foreign key constraint of comments_author users(username)) 
-        // LEFT HERE to do remaing error handling for 
-        //       - incorrect data types for each field
-        //    WANT TO MAKE UTIL tests for post, patch, delete. check length in more controlled way
-        // think can just do this by querying the data base from the test file
+        test('Responds with a status of 201 and a posted comment object when username value is not already in the database', () => {
+            const article_id = 5;
+            const newComment = { 
+                body: 'Test comment.',
+                username: 'new_user',
+            }
+            return request(app)
+              .post(`/api/articles/${article_id}/comments`)
+              .send(newComment)
+              .expect(201)
+              .then((res) => {
+                  const postedComment = res.body.comment;
+                  expect(postedComment).toMatchObject({
+                    comment_id: 19,
+                    author: 'new_user',
+                    article_id: 5,
+                    votes: 0,
+                    created_at: expect.any(String),
+                    body: 'Test comment.'
+                  });
+              });
+        });
+        test('Responds with a status 400 and a \'Bad Request: missing field(s)\' error message when the comment has undefined values.', () => {
+            const article_id = 5;
+            const newComment = { 
+                body: undefined,
+                username: 'butter_bridge',
+            }
+            return request(app)
+              .post(`/api/articles/${article_id}/comments`)
+              .send(newComment)
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request: missing field(s)');
+              });
+        });
     });
 });
 
@@ -474,7 +504,6 @@ describe('/api/comments/:comment_id', () => {
               .expect(200)
               .then((res) => {
                   const comment = res.body.comment;
-                  //console.log(res.body);
                   expect(comment).toMatchObject({
                       comment_id: 7, 
                       author: 'icellusedkars',

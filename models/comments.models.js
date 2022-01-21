@@ -1,17 +1,45 @@
 const db = require('../db/connection.js');
 
 exports.insertComment = (article_id, newComment) => {
+    console.log('in post comm model')
     const body = newComment.body
     const author = newComment.username
     return db.query(
-        `INSERT INTO comments
-        (author, article_id, body)
-        VALUES 
-        ($1, $2, $3)
-        RETURNING *;`, [author, article_id, body]
+        `SELECT * FROM users
+        WHERE username = $1;`, [author]
     ).then((result) => {
-        const newComment = result.rows;
-        return newComment[0];
+        if (result.rows.length === 0) {
+            console.log('user not in the database yet')
+            return db.query(
+                `INSERT INTO users 
+                (username)
+                VALUES
+                ($1);`, [author]
+            ) 
+            .then(() => {
+                return db.query(
+                    `INSERT INTO comments
+                    (author, article_id, body)
+                    VALUES 
+                    ($1, $2, $3)
+                    RETURNING *;`, [author, article_id, body]
+                ).then((result) => {
+                    const newComment = result.rows;
+                    return newComment[0];
+                });
+            });
+        } else {
+            return db.query(
+                `INSERT INTO comments
+                (author, article_id, body)
+                VALUES 
+                ($1, $2, $3)
+                RETURNING *;`, [author, article_id, body]
+            ).then((result) => {
+                const newComment = result.rows;
+                return newComment[0];
+            });
+        }  
     });
 }
 
