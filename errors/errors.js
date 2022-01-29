@@ -6,6 +6,7 @@ exports.handle404s = (req, res) => {
 exports.handleCustomErrors = (err, req, res, next) => {
     console.log('err in custom error handling')
     if(err.status) {
+        console.log(err, '<<<< error on 9')
         res.status(err.status).send({ msg: err.msg });
     } else {
         next(err);

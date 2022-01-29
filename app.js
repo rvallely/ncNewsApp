@@ -4,7 +4,6 @@ const { getTopics } = require('./controllers/topics.controllers.js')
 const { getArticleById, patchArticle, getArticles, getCommentsForArticleId } = require('./controllers/articles.controllers.js');
 const { postComment, getComments, deleteComment, getComment } = require('./controllers/comments.controllers.js');
 const { getEndpoints } = require('./controllers/endpoints.controllers.js');
-//const {handlePsqlErrors, handleServerErrors, handleCustomErrors, handle404s } = require('./errors.erros.js');
 const { handle404s, handleCustomErrors, handleServerErrors, handlePsqlErrors } = require('./errors/errors');
 
 app.use(express.json());

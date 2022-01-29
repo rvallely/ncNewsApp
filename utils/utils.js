@@ -1,3 +1,4 @@
+const { rows } = require('pg/lib/defaults');
 const db = require('../db/connection.js');
 
 exports.checkArticleIdExists = (article_id) => {
@@ -47,4 +48,38 @@ exports.checkPatchKeys = (patchObj) => {
     } else {
         return false;
     }
+}
+
+exports.checkColumnExists = (query) => {
+    console.log(query.sort_by, '<<< query');
+    
+    if (query.sort_by === undefined ||
+        query.sort_by === 'author' ||
+        query.sort_by === 'title' ||
+        query.sort_by === 'article_id' ||
+        query.sort_by === 'topic' ||
+        query.sort_by === 'created_at' ||
+        query.sort_by === 'votes' ||
+        query.sort_by === 'comment_count') {
+            console.log('false')
+            return true;
+    } else {
+        return false;
+    }
+}
+
+exports.checkTopicExists = (topic) => {
+    return db.query(
+        `SELECT * FROM articles
+        WHERE topic = $1`, [topic]
+    ).then((result) => {
+        if (topic === undefined) {
+            return true;
+        }
+        if (result.rows.length === 0) {
+            return 'invalid topic';
+        } else if (result.rows.length > 0) {
+            return true;
+        }
+    });
 }

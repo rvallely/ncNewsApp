@@ -32,67 +32,71 @@ exports.updateArticle = (article_id, increaseVotesBy) => {
         });
 }
 
-/*exports.selectArticles = () => {
+exports.selectArticles = (query) => {
+    console.log(query, '<< qu')
     
     return db.query(
-      `SELECT author, title, article_id, topic, created_at, votes
+      `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id) AS comment_count
       FROM articles
-      ;`
+      LEFT JOIN comments ON comments.article_id = articles.article_id
+      GROUP BY articles.article_id;`
     ).then((result) => {
       let articles = result.rows
-    let count = 0;  
-    articles.forEach((article) => {
-          const article_id = article.article_id;
-          return db.query(
-              `SELECT *
-              FROM comments
-              WHERE article_id = $1;`, [12]
-          ).then((res) => {
-              console.log(article_id, '<<< id')
-              const comment_count = res.rows.length;
-              article.comment_count = comment_count;
-              //count += 1;
-              //if (count === 11) {
-                  console.log(articles, '<<< articles at 11')
-              //}
+      console.log(query, '<<< query in then block')
 
-          });
+      let sort_by = '';
+      let order = '';
+      let topic = '';
+
+      if (query.hasOwnProperty('sort_by') === false) {
+          sort_by = 'created_at';
+      } else {
+          sort_by = query.sort_by;
+      }
+      if (query.hasOwnProperty('order') === false) {
+          order = 'DESC';
+      } else {
+          order = query.order;
+      }
+      console.log('the sort by is', sort_by)
+      console.log('this is the order', order)
+
+      if (order === 'DESC') {
+        articles.sort(function(a, b) {
+          if(a[sort_by] > b[sort_by]) {
+              return -1;
+          }
+          if(a[sort_by] < b[sort_by]) {
+              return 1;
+          }
+          else {
+              return 0;
+          }
+      
       });
-    });
-}*/
+    } else if (order === 'ASC') {
+        articles.sort(function(a, b) {
+          if(a[sort_by] < b[sort_by]) {
+              return -1;
+          }
+          if(a[sort_by] > b[sort_by]) {
+              return 1;
+          }
+          else {
+              return 0;
+          }
+      
+      });
 
-exports.selectArticles = () => {
-    let count = 0;
-    let obj = {};
-    const ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];  
-    // const id1 = ids[0]
-    // const id12= ids[11];
-    ids.forEach((id) => {
-    // console.log(id, '<<< id before query')
-    return db.query(
-        `SELECT *
-        FROM comments
-        WHERE article_id = $1`, [id]
-    ).then((res) => {
-        console.log(id, '<<< id after query')
-        count += 1;
-        //console.log(id, '<<id');  //comms>> ', res.rows.length
-        obj[id] = res.rows.length;
-        if(count === 11) {
-            console.log(obj);
-        }
-    })    
-  });
+    }
+    if (query.topic !== undefined) {
+        console.log(query.topic, '<<< filter by')
+        articles = articles.filter((article) => article.topic === query.topic)
+    }
+    return articles;
+});
+
 }
-
-   //   console.log(articles, '<<< articles')
-    // for each article in articles(12) 
-    // make a request to the server and get all the comments for each each article_id
-    // get length of rows a
-    // assign this length as article.comment_count 
-    // for each article
-    // then return array once all 12 have had comment_count added
-
 
 exports.selectComments = (article_id ) => {
     return db.query(
@@ -104,3 +108,5 @@ exports.selectComments = (article_id ) => {
         return comments;
     });
 }
+
+//articles.${sort_by} ${order}

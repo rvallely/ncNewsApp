@@ -3,6 +3,7 @@ const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const app = require('../app.js');
 const  seed  = require('../db/seeds/seed.js');
+const articles = require('../db/data/test-data/articles.js');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -26,6 +27,7 @@ describe('/api/topics', () => {
             .expect(200)
             .then((response) => {
                 expect(Array.isArray(response.body.topics)).toBe(true);
+                expect(response.body.topics.length).toBeGreaterThan(0)
                 expect(response.body.topics.length).toBe(3);
                 response.body.topics.forEach((topic) => {
                     expect(topic).toMatchObject({
@@ -45,7 +47,7 @@ describe('/api/comments', () => {
           .get('/api/comments')
           .expect(200)
           .then((response) => {     
-              const comments = response.body.comments
+              const comments = response.body.comments;
               expect(comments.length).toBe(18);
               comments.forEach(function(comment) {
                   expect(comment).toMatchObject({
@@ -119,7 +121,6 @@ describe('/api/articles/:article_id', () => {
             const updateVotes = { inc_votes : 20 };
             return request(app).get(`/api/articles/${articleId}`).then((res)=> {
                 votesBefore = res.body.article.votes;
-                console.log(votesBefore)
                 return request(app)
                   .patch(`/api/articles/${articleId}`)
                   .expect(200)
@@ -136,7 +137,6 @@ describe('/api/articles/:article_id', () => {
                       votes: expect.any(Number)
                     });
                     expect(updatedArticle.votes).toBe(votesBefore + updateVotes.inc_votes);
-                    console.log(votesBefore + updateVotes.inc_votes)
                   });
             });
             
@@ -145,27 +145,28 @@ describe('/api/articles/:article_id', () => {
             const articleId = 4;
             let votesBefore = undefined;
             const updateVotes = { inc_votes : -15 };
-            const articleBefore = request(app).get(`/api/articles/${articleId}`).then((res)=> {
+            return request(app).get(`/api/articles/${articleId}`).then((res)=> {
                 votesBefore = res.body.article.votes;
+                console.log(votesBefore, '<<< votes before')
+                return request(app)
+                  .patch(`/api/articles/${articleId}`)
+                  .expect(200)
+                  .send(updateVotes)
+                  .then((response) => {
+                      const updatedArticle = response.body.updatedArticle;
+                      expect(updatedArticle).toMatchObject({
+                          author: expect.any(String), 
+                          title: expect.any(String),
+                          article_id: expect.any(Number),
+                          body: expect.any(String),
+                          topic: expect.any(String),
+                          created_at: expect.any(String),
+                          votes: expect.any(Number),
+                      });
+                      expect(updatedArticle.votes).toBe(votesBefore + updateVotes.inc_votes);
+                  });
             });
-            return request(app)
-              .patch(`/api/articles/${articleId}`)
-              .expect(200)
-              .send(updateVotes)
-              .then((response) => {
-                  const updatedArticle = response.body.updatedArticle;
-                  expect(updatedArticle).toMatchObject({
-                    author: expect.any(String), 
-                    title: expect.any(String),
-                    article_id: expect.any(Number),
-                    body: expect.any(String),
-                    topic: expect.any(String),
-                    created_at: expect.any(String),
-                    votes: expect.any(Number),
-                });
-                // below (-->) doesn't work every time I run, either change to work or omit 
-                //-->expect(updatedArticle.votes).toBe(votesBefore + -15);
-              });
+            
         });
         test('Responds with a status of 200 and an updated article object, when the request body has inc_votes and extra fields.' , () => {
             const articleId = 5;
@@ -189,7 +190,6 @@ describe('/api/articles/:article_id', () => {
                       votes: expect.any(Number)
                     });
                     expect(updatedArticle.votes).toBe(votesBefore + updateVotes.inc_votes);
-                    console.log(votesBefore + updateVotes.inc_votes)
                   });
             });
         });
@@ -253,17 +253,15 @@ describe('/api/articles/:article_id', () => {
     });
 });
 
-// -------> need to get working 
-describe.skip('/api/articles', () => {
-    describe('GET', () => {
+describe('/api/articles', () => {
+    describe('GET', () => {  
         test('Responds with status 200 and an array of article objects. Each article object should have the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count', () => {
             return request(app)
               .get('/api/articles/')
               .expect(200)
               .then((response) => { 
-                  console.log(response.body)
                   const articles = response.body.articles;
-                  console.log(articles);
+                  expect(articles.length).toBeGreaterThan(0);
                   expect(Array.isArray(articles)).toBe(true);
                   articles.forEach((article) => {
                       expect(article).toMatchObject({
@@ -273,11 +271,270 @@ describe.skip('/api/articles', () => {
                           topic: expect.any(String),
                           created_at: expect.any(String),
                           votes: expect.any(Number),
-                          comment_count: expect.any(Number)
+                          comment_count: expect.stringMatching(/[0-9]+/)
                       });
                   });
                   expect(articles.length).toBe(12);
-                  // how to match the content of each object?
+              });
+       
+        });
+        test('When no query is specified responds with status 200 and an array of article objects sorted by date in descending order.', () => {
+            return request(app)
+              .get('/api/articles')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBeGreaterThan(0);
+                  expect(Array.isArray(articles)).toBe(true);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.created_at > b.created_at) {
+                        return -1;
+                    }
+                    if(a.created_at < b.created_at) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles);
+              });
+        });
+        test('When a column to sort by is specified, but not an order (ASC/DESC) as a query, responds with status 200 and an array of articles objects sorted by this column in descending order.', () => {
+            return request(app)
+              .get('/api/articles?sort_by=author')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBeGreaterThan(0);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.author > b.author) {
+                        return -1;
+                    }
+                    if(a.author < b.author) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles);
+              });
+        });
+        test('When a column to sort by is comment_count, but no order (ASC/DESC) is specified in the query, responds with status 200 and an array of articles objects sorted by this comment_count in desceneding order.', () => {
+            return request(app)
+              .get('/api/articles?sort_by=comment_count')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBeGreaterThan(0);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.comment_count > b.comment_count) {
+                        return -1;
+                    }
+                    if(a.comment_count < b.comment_count) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                console.log(sortedArticles, '<<< sorted Articles');
+                expect(articles).toEqual(sortedArticles);
+              });
+        });
+        test('When a column and the order ASC are specified in the query, responds with status 200 and an array of article objects sorted by that column in ascending order.', () => {
+            return request(app)
+              .get('/api/articles?sort_by=title&order=ASC')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  //console.log(articles, '<<< articles')
+                  expect(articles.length).toBeGreaterThan(0);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.title < b.title) {
+                        return -1;
+                    }
+                    if(a.title > b.title) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles);
+              });
+        });
+        test('When a column and the order DESC are specified in the query, responds with status 200 and an array of article objects sorted by that column in descending order.', () => {
+            return request(app)
+              .get('/api/articles?sort_by=topic&order=DESC')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBeGreaterThan(0);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.topic > b.topic) {
+                        return -1;
+                    }
+                    if(a.topic < b.topic) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles);
+              });
+        });
+        test('When an order is specified in the query but no column name, the default column to sort by is created_at. Responds with status 200 and an array of article objects sorted by created_at in order specified.', () => {
+            return request(app)
+              .get('/api/articles/?order=ASC')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBeGreaterThan(0);
+                  expect(Array.isArray(articles)).toBe(true);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.created_at < b.created_at) {
+                        return -1;
+                    }
+                    if(a.created_at > b.created_at) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles);
+              });   
+        });
+        test('Responds with a status 404 and the error message \'Not Found\' if the column specified in the query to sort by does not exist.', () => {
+            return request(app)
+              .get('/api/articles/?sort_by=likes&order=ASC')
+              .expect(404)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Not Found: this column does not exist');
+              });
+        });
+        test('Responds with a status of 200 and an array of article objects filtered by topic, when valid topic is specified in the query.', () => {
+            return request(app)
+              .get('/api/articles/?topic=cats')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(Array.isArray(articles));
+                  expect(articles.length).toBe(1);
+                  expect(articles).toEqual([
+                    {
+                      author: 'rogersop',
+                      title: 'UNCOVERED: catspiracy to bring down democracy',
+                      article_id: 5,
+                      topic: 'cats',
+                      created_at: '2020-08-03T13:14:00.000Z',
+                      votes: 0,
+                      comment_count: '2'
+                    }
+                  ]);
+              }); 
+        });
+        test('Responds with a status of 200 and an array of article objects filtered by topic, when topic specified in the query is valid. With no sort by and order specified in query, articles are sorted by default through created_at column and in descending order', () => {
+            return request(app)
+              .get('/api/articles/?topic=mitch')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBe(11);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.created_at > b.created_at) {
+                        return -1;
+                    }
+                    if(a.created_at < b.created_at) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles); 
+              }); 
+        });
+        test('Responds with a status of 200 and an array of article objects filtered by topic, when topic specified in the query is valid. When sort by and order are specified in the query, articles are sorted according to this.', () => {
+            return request(app)
+              .get('/api/articles/?sort_by=title&order=ASC&topic=mitch')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBe(11);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.title < b.title) {
+                        return -1;
+                    }
+                    if(a.title > b.title) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles); 
+              }); 
+        });
+        test('Responds with a status of 200 and an array of article objects filtered by topic, when topic specified in the query is valid. When sort by and no order are specified in the query, articles are sorted by specified column and in descending order.', () => {
+            return request(app)
+              .get('/api/articles/?sort_by=article_id&topic=mitch')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBe(11);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.article_id > b.article_id) {
+                        return -1;
+                    }
+                    if(a.article_id < b.article_id) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles); 
+              }); 
+        });
+        test('Responds with a status of 200 and an array of article objects filtered by topic, when topic specified in the query is valid. When no sort_by is given, but an order is given, array is sorted by created_at and with given order.', () => {
+            return request(app)
+              .get('/api/articles/?order=ASC&topic=mitch')
+              .expect(200)
+              .then((res) => {
+                  const articles = res.body.articles;
+                  expect(articles.length).toBe(11);
+                  const sortedArticles = [... articles].sort(function(a, b) {
+                    if(a.created_at < b.created_at) {
+                        return -1;
+                    }
+                    if(a.created_at > b.created_at) {
+                        return 1;
+                    }
+                    else {
+                        return 0;
+                    }
+                });
+                expect(articles).toEqual(sortedArticles); 
+              }); 
+        });
+        test('Responds with status 404 and an error message \'Not Found: topic does not exist\'', () => {
+            return request(app)
+              .get('/api/articles/?topic=news')
+              .expect(404)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Not Found: topic does not exist');
+              });
+        });
+        test('Responds with status 400 and an error message \'Bad Request: order is invalid\' when order passed into query is not ASC or DESC.', () => {
+            return request(app)
+              .get('/api/articles/?topic=mitch&order=ascend')
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request: order is invalid');
               });
         });
     });
@@ -291,8 +548,8 @@ describe('/api/articles/:article_id/comments', () => {
               .get(`/api/articles/${article_id}/comments`)
               .expect(200)
               .then((response) => {
-                  console.log(response.body)
                 const comments = response.body.comments
+                expect(comments.length).toBeGreaterThan(0);
                 comments.forEach(function(comment) {
                     expect(comment).toMatchObject({
                     comment_id: expect.any(Number),
@@ -351,30 +608,32 @@ describe('/api/articles/:article_id/comments', () => {
                 username: 'butter_bridge',
             }
             let commentNumberBefore = undefined;
-            let getAllCommentsBefore = request(app).get('/api/comments').then((res) => {
-                commentNumberBefore = res.body.comments.length;
-            });
             return request(app)
-              .post(`/api/articles/${article_id}/comments`)
-              .send(newComment)
-              .expect(201)
-              .then((response) => {
-                  const postedComment = response.body.comment;
-                  expect(postedComment).toMatchObject({ 
-                      comment_id: 19,
-                      author: 'butter_bridge',
-                      article_id: article_id,
-                      votes: 0,
-                      created_at: expect.any(String),
-                      body: expect.any(String)
-                  });
-                  let commentNumberAfter = undefined;
+              .get('/api/comments')
+              .then((res) => {
+                  commentNumberBefore = res.body.comments.length;
                   return request(app)
-                    .get('/api/comments')
-                    .then((res) => {
-                    commentNumberAfter = res.body.comments.length;
-                    expect(commentNumberAfter).toBe(commentNumberBefore + 1);
-                  });
+                      .post(`/api/articles/${article_id}/comments`)
+                      .send(newComment)
+                      .expect(201)
+                      .then((response) => {
+                          const postedComment = response.body.comment;
+                          expect(postedComment).toMatchObject({ 
+                              comment_id: 19,
+                              author: 'butter_bridge',
+                              article_id: article_id,
+                              votes: 0,
+                              created_at: expect.any(String),
+                              body: expect.any(String)
+                          });
+                          let commentNumberAfter = undefined;
+                          return request(app)
+                              .get('/api/comments')
+                              .then((res) => {
+                                  commentNumberAfter = res.body.comments.length;
+                                  expect(commentNumberAfter).toBe(commentNumberBefore + 1);
+                              });
+                      });
               });
         });
         test('Responds with a status of 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is the wrong data type.', () => {
@@ -594,7 +853,7 @@ describe('/api/comments/:comment_id', () => {
 });
 });
 // need to complete test for GET /api to get JSON of all available endpoints
-// Also need to get GET /api/articles working.
+
 // Then hosting and tidying up
 // ************** need to get working 
 
