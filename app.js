@@ -8,7 +8,6 @@ const { handle404s, handleCustomErrors, handleServerErrors, handlePsqlErrors } =
 
 app.use(express.json());
 
-
 app.get('/api/topics', getTopics);
 app.get('/api/articles/:article_id', getArticleById);
 app.patch('/api/articles/:article_id', patchArticle);
@@ -21,12 +20,7 @@ app.get('/api/comments/:comment_id', getComment);
 app.get('/api', getEndpoints);
 
 app.all('*', handle404s);
-// catch all - will match any method that hasn't been matched yet with any path that hasn't been matched yet and send out 404
 
-
-
-// Each app.use(middleware) is called every time a request is sent to the server.
-// order matters! it seems to run each of these error handlings (top - bottom) funcs and check if condition is met. if not met, goes to the next one.
 app.use(handleCustomErrors);
 app.use(handlePsqlErrors);
 app.use(handleServerErrors);

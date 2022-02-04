@@ -33,20 +33,15 @@ exports.updateArticle = (article_id, increaseVotesBy) => {
 }
 
 exports.selectArticles = (query) => {
-    console.log(query, '<< qu')
-    
     return db.query(
       `SELECT articles.author, articles.title, articles.article_id, articles.topic, articles.created_at, articles.votes, COUNT(comments.article_id) AS comment_count
       FROM articles
       LEFT JOIN comments ON comments.article_id = articles.article_id
       GROUP BY articles.article_id;`
     ).then((result) => {
-      let articles = result.rows
-      console.log(query, '<<< query in then block')
-
+      let articles = result.rows;
       let sort_by = '';
       let order = '';
-      let topic = '';
 
       if (query.hasOwnProperty('sort_by') === false) {
           sort_by = 'created_at';
@@ -58,8 +53,6 @@ exports.selectArticles = (query) => {
       } else {
           order = query.order;
       }
-      console.log('the sort by is', sort_by)
-      console.log('this is the order', order)
 
       if (order === 'DESC') {
         articles.sort(function(a, b) {
@@ -85,12 +78,10 @@ exports.selectArticles = (query) => {
           else {
               return 0;
           }
-      
       });
-
     }
+
     if (query.topic !== undefined) {
-        console.log(query.topic, '<<< filter by')
         articles = articles.filter((article) => article.topic === query.topic)
     }
     return articles;
@@ -108,5 +99,3 @@ exports.selectComments = (article_id ) => {
         return comments;
     });
 }
-
-//articles.${sort_by} ${order}

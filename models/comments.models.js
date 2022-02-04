@@ -1,7 +1,6 @@
 const db = require('../db/connection.js');
 
 exports.insertComment = (article_id, newComment) => {
-    console.log('in post comm model')
     const body = newComment.body
     const author = newComment.username
     return db.query(
@@ -9,7 +8,6 @@ exports.insertComment = (article_id, newComment) => {
         WHERE username = $1;`, [author]
     ).then((result) => {
         if (result.rows.length === 0) {
-            console.log('user not in the database yet')
             return db.query(
                 `INSERT INTO users 
                 (username)

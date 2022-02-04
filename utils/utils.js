@@ -42,7 +42,6 @@ exports.checkCommentExists = (comment_id) => {
 }
 
 exports.checkPatchKeys = (patchObj) => {
-    console.log(patchObj, '<<< patch object')
     if (patchObj.hasOwnProperty('inc_votes') && typeof patchObj.inc_votes === 'number') {
         return true;
     } else {
@@ -51,8 +50,6 @@ exports.checkPatchKeys = (patchObj) => {
 }
 
 exports.checkColumnExists = (query) => {
-    console.log(query.sort_by, '<<< query');
-    
     if (query.sort_by === undefined ||
         query.sort_by === 'author' ||
         query.sort_by === 'title' ||
@@ -61,7 +58,6 @@ exports.checkColumnExists = (query) => {
         query.sort_by === 'created_at' ||
         query.sort_by === 'votes' ||
         query.sort_by === 'comment_count') {
-            console.log('false')
             return true;
     } else {
         return false;

@@ -3,7 +3,6 @@ const db = require('../db/connection.js');
 const testData = require('../db/data/test-data/index.js');
 const app = require('../app.js');
 const  seed  = require('../db/seeds/seed.js');
-const articles = require('../db/data/test-data/articles.js');
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -147,7 +146,6 @@ describe('/api/articles/:article_id', () => {
             const updateVotes = { inc_votes : -15 };
             return request(app).get(`/api/articles/${articleId}`).then((res)=> {
                 votesBefore = res.body.article.votes;
-                console.log(votesBefore, '<<< votes before')
                 return request(app)
                   .patch(`/api/articles/${articleId}`)
                   .expect(200)
@@ -173,7 +171,6 @@ describe('/api/articles/:article_id', () => {
             const updateVotes = { inc_votes : 135 , voters: ['a', 'b', 'c'] };
             return request(app).get(`/api/articles/${articleId}`).then((res)=> {
                 votesBefore = res.body.article.votes;
-                console.log(votesBefore)
                 return request(app)
                   .patch(`/api/articles/${articleId}`)
                   .expect(200)
@@ -339,7 +336,6 @@ describe('/api/articles', () => {
                         return 0;
                     }
                 });
-                console.log(sortedArticles, '<<< sorted Articles');
                 expect(articles).toEqual(sortedArticles);
               });
         });
@@ -349,7 +345,7 @@ describe('/api/articles', () => {
               .expect(200)
               .then((res) => {
                   const articles = res.body.articles;
-                  //console.log(articles, '<<< articles')
+
                   expect(articles.length).toBeGreaterThan(0);
                   const sortedArticles = [... articles].sort(function(a, b) {
                     if(a.title < b.title) {
@@ -852,17 +848,13 @@ describe('/api/comments/:comment_id', () => {
     });
 });
 });
-// need to complete test for GET /api to get JSON of all available endpoints
-
-// Then hosting and tidying up
-// ************** need to get working 
 
 /*describe('/api', () => {
     describe('GET', () => {
         test('Responds with JSON describing all the available endpoints on the API.', () => {
             return request(app) 
               .get('/api')
-              .expect(200) // or maybe 201??
+              .expect(200) // 
               .then((response) => {
                   //
               });
