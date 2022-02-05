@@ -3,8 +3,8 @@ const app = express();
 const { getTopics } = require('./controllers/topics.controllers.js')
 const { getArticleById, patchArticle, getArticles, getCommentsForArticleId } = require('./controllers/articles.controllers.js');
 const { postComment, getComments, deleteComment, getComment } = require('./controllers/comments.controllers.js');
-const { getEndpoints } = require('./controllers/endpoints.controllers.js');
 const { handle404s, handleCustomErrors, handleServerErrors, handlePsqlErrors } = require('./errors/errors');
+const endpoints = require('./endpoints');
 
 app.use(express.json());
 
@@ -17,7 +17,9 @@ app.post('/api/articles/:article_id/comments', postComment)
 app.get('/api/comments', getComments);
 app.delete('/api/comments/:comment_id', deleteComment);
 app.get('/api/comments/:comment_id', getComment);
-app.get('/api', getEndpoints);
+app.get('/api', (req, res, next) => {
+    res.send(endpoints);
+});
 
 app.all('*', handle404s);
 

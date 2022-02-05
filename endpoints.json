@@ -1,27 +1,149 @@
 {
   "GET /api": {
-    "description": "serves up a json representation of all the available endpoints of the api"
+    "description": "Responds with a JSON representing all available endpoints on the API."
   },
   "GET /api/topics": {
-    "description": "serves an array of all topics",
+    "description": "Responds with an array of all the topic objects.",
     "queries": [],
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
   },
-  "GET /api/articles": {
-    "description": "serves an array of all topics",
-    "queries": ["author", "topic", "sort_by", "order"],
+  "GET /api/comments": {
+    "description": "Responds with an array of all the comment objects.",
+    "queries": [],
     "exampleResponse": {
-      "articles": [
+        "comments": [
         {
-          "title": "Seafood substitutions are increasing",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": 1527695953341
+        "comment_id": 1,
+        "author": "tickle122",
+        "article_id": 18,
+        "votes": -1,
+        "created_at": "2020-05-21T23:19:00.000Z",
+        "body": "Itaque quisquam est similique et est perspiciatis reprehenderit voluptatem autem. Voluptatem accusantium eius error adipisci quibusdam doloribus."
+        },
+        {
+        "comment_id": 2,
+        "author": "grumpy19",
+        "article_id": 4,
+        "votes": 7,
+        "created_at": "2020-01-01T15:02:00.000Z",
+        "body": "Nobis consequatur animi. Ullam nobis quaerat voluptates veniam."
         }
       ]
     }
+  },
+  "GET /api/articles": {
+    "description": "Responds with an array of all the article objects.",
+    "queries": [
+      {"sort_by": "sorts articles by any valid column eg. sort_by=author"},
+      {"order": "can be set to ASC or DESC eg.order=ASC"} , 
+      {"topic": "filters by any valid topic - use GET /api/topics to get all topics eg. topic=coding"}
+              ], 
+    "exampleResponse": {
+      "articles": [
+        {
+        "author": "grumpy19",
+        "title": "The Notorious MSG’s Unlikely Formula For Success",
+        "article_id": 34,
+        "topic": "cooking",
+        "created_at": "2020-11-22T11:13:00.000Z",
+        "votes": 0,
+        "comment_count": "11"
+        }
+      ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "Responds with an article object.",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 3,
+        "title": "22 Amazing open source React projects",
+        "body": "This is a collection of open source apps built with React.JS library. In this observation, we compared nearly 800 projects to pick the top 22. (React Native: 11, React: 11). To evaluate the quality, Mybridge AI considered a variety of factors to determine how useful the projects are for programmers. To give you an idea on the quality, the average number of Github stars from the 22 projects was 1,681.",
+        "votes": 0,
+        "topic": "coding",
+        "author": "happyamy2016",
+        "created_at": "2020-02-29T11:12:00.000Z",
+        "comment_count": 10
+      }
+    }
+  }, 
+  "PATCH /api/articles/:article_id": {
+    "description": "Responds with an article object.", 
+    "params" : { "inc_votes" : 2 },
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "article_id": 3,
+        "title": "22 Amazing open source React projects",
+        "body": "This is a collection of open source apps built with React.JS library. In this observation, we compared nearly 800 projects to pick the top 22. (React Native: 11, React: 11). To evaluate the quality, Mybridge AI considered a variety of factors to determine how useful the projects are for programmers. To give you an idea on the quality, the average number of Github stars from the 22 projects was 1,681.",
+        "votes": 0,
+        "topic": "coding",
+        "author": "happyamy2016",
+        "created_at": "2020-02-29T11:12:00.000Z",
+        "comment_count": 12
+      }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description" : "Responds with an array of comment objects for the given article id.", 
+    "queries": [],
+    "exampleResponse": {
+      "comments": [
+        {
+        "comment_id": 63,
+        "votes": -1,
+        "created_at": "2020-08-12T23:10:00.000Z",
+        "author": "jessjelly",
+        "body": "Est pariatur quis ipsa culpa unde temporibus et accusantium rerum. Consequatur in occaecati aut non similique aut quibusdam. Qui sunt magnam iure blanditiis. Et est non enim. Est ab vero dolor."
+        },
+        {
+        "comment_id": 102,
+        "votes": 10,
+        "created_at": "2020-09-14T12:13:00.000Z",
+        "author": "jessjelly",
+        "body": "Quia quos adipisci sint expedita voluptatem id ut at accusantium. Et ex itaque recusandae aut quo. Quia quam similique eum quidem iusto. Aspernatur ducimus vitae vel natus doloribus qui id. Excepturi voluptatem qui quia sit qui eveniet voluptatem. Fugit itaque libero quibusdam sunt."
+        }
+      ]
+    }
+  },
+  "POST /api/articles/:article_id/comments": { 
+    "description" : "Responds with a posted comment object and posts the comment.", 
+    "params" : {  "body": "Test comment.",
+                "username": "butter_bridge"
+             },
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 301,
+        "votes": 0,
+        "created_at": "2022-02-05T23:10:00.000Z",
+        "author": "butter_bridge",
+        "body": "Test comment."
+        }
+    }
+  },
+  "GET /api/comments/:comment_id": { 
+    "description": "Responds with a comment object of the given comment_id",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "comment_id": 63,
+        "author": "jessjelly",
+        "article_id": 2,
+        "votes": -1,
+        "created_at": "2020-08-12T23:10:00.000Z",
+        "body": "Est pariatur quis ipsa culpa unde temporibus et  accusantium rerum. Consequatur in occaecati aut non similique aut quibusdam. Qui sunt magnam iure blanditiis. Et est non enim. Est ab vero dolor."
+      }
+    }
+  }, 
+  "DELETE /api/comments/:comment_id": {
+    "description" : "Responds with no content and deletes coment of given",
+    "queries": [],
+    "exampleResponse": {}
   }
 }
+
+

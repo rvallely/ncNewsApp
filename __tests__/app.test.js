@@ -849,15 +849,20 @@ describe('/api/comments/:comment_id', () => {
 });
 });
 
-/*describe('/api', () => {
+describe('/api', () => {
     describe('GET', () => {
         test('Responds with JSON describing all the available endpoints on the API.', () => {
             return request(app) 
               .get('/api')
               .expect(200) // 
               .then((response) => {
-                  //
+                  expect(typeof response).toBe('object');
+                  const keys = (Object.keys(response.body));
+                  keys.forEach((key) => {
+                      expect(/POST|GET|PATCH|DELETE/g.test(key.split(' ')[0])).toBe(true);
+                      expect(/\/api/g.test(key.split(' ')[1].slice(0, 4))).toBe(true);
+                  });
               });
         }); 
     });
-}); */
+}); 
