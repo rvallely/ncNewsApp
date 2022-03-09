@@ -40,6 +40,11 @@ exports.selectArticles = (query) => {
       GROUP BY articles.article_id;`
     ).then((result) => {
       let articles = result.rows;
+
+      articles.forEach((article) => {
+          article.comment_count = Number(article.comment_count)
+      });
+      
       let sort_by = '';
       let order = '';
 

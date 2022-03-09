@@ -268,7 +268,7 @@ describe('/api/articles', () => {
                           topic: expect.any(String),
                           created_at: expect.any(String),
                           votes: expect.any(Number),
-                          comment_count: expect.stringMatching(/[0-9]+/)
+                          comment_count: expect.any(Number)
                       });
                   });
                   expect(articles.length).toBe(12);
@@ -428,7 +428,7 @@ describe('/api/articles', () => {
                       topic: 'cats',
                       created_at: '2020-08-03T13:14:00.000Z',
                       votes: 0,
-                      comment_count: '2'
+                      comment_count: 2
                     }
                   ]);
               }); 
