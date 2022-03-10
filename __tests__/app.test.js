@@ -886,22 +886,16 @@ describe.only('/api/users/:username', () => {
             });
           });
         });
-        test.only('Responds with status 404.', () => {
-            const username = 'icellusedkars';
+        test('Responds with status 404  and returns a \'Not Found\' error message, if username is valid because it is a string, but doesn\'t yet exist.', () => {
+            const username = 'non_existent_user';
             return request(app)
               .get(`/api/users/${username}`)
-              .expect(200)
-              .then((response) => {  
-                  const user = response.body.user;
-                  expect(typeof user).toBe('object');
-                  expect(user).toMatchObject({ 
-                    username: 'icellusedkars',
-                    avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
-                    name: 'sam'
-                });
+              .expect(404)
+              .then((response) => {
+                expect(response.body.msg).toBe('Not Found');
               });
             });
-    });
+        });
 }); 
 
 describe('/api', () => {

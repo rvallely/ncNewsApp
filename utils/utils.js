@@ -79,3 +79,16 @@ exports.checkTopicExists = (topic) => {
         }
     });
 }
+
+exports.checkUserExists = (username) => {
+    return db.query(
+        `SELECT * FROM users
+        WHERE username = $1`, [username]
+    ).then((result) => {
+        if (result.rows.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+}
