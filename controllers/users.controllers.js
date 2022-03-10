@@ -1,5 +1,5 @@
 const { selectUsers, selectSingleUser } = require('../models/users.models.js');
-const { checkUserExists } = require('../utils/utils.js');
+const { checkUserExists, checkUsernameValid } = require('../utils/utils.js');
 
 exports.getUsers = (req, res, next) => {
     return selectUsers().then((users) => {
@@ -12,18 +12,26 @@ exports.getUsers = (req, res, next) => {
 
 exports.getSingleUser = (req, res, next) => {
     const username = req.params.username;
-    return checkUserExists(username).then((userExists) => {
-        if(userExists) {
-            return selectSingleUser(username).then((user) => {
-                res.status(200).send({ user: user });
-            })
-        } else {
-            return Promise.reject({ status: 404, msg: 'Not Found' });
-        }
-    })
+    const usernameValid = checkUsernameValid(username);
     
-    .catch((err) => {
-        next(err);
-    });
+    if (usernameValid === true) {
+        return checkUserExists(username).then((userExists) => {
+            if (userExists) {
+                return selectSingleUser(username).then((user) => {
+                    res.status(200).send({ user: user });
+                })
+            } else {
+                return Promise.reject({ status: 404, msg: 'Not Found' })
+                .catch((err) => {
+                    next(err);
+                });
+            }
+        });
+    } else {
+        return Promise.reject({ status: 400, msg: 'Bad Request: Username cannot exceed 30 characters.' })
+        .catch((err) => {
+            next(err);
+        });
+    }
 }
 

@@ -896,6 +896,16 @@ describe.only('/api/users/:username', () => {
               });
             });
         });
+        test('Responds with status 400  and returns a \'Bad Request: maximum characters exceeded\' error message, if username is invalid because it has more than 30 characters.', () => {
+            const username = 'non_existent_user_with_too_many_characters';
+            return request(app)
+              .get(`/api/users/${username}`)
+              .expect(400)
+              .then((response) => {
+                expect(response.body.msg).toBe('Bad Request: Username cannot exceed 30 characters.');
+              });
+        });
+      
 }); 
 
 describe('/api', () => {
