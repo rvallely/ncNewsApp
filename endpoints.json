@@ -126,7 +126,7 @@
     }
   },
   "GET /api/comments/:comment_id": { 
-    "description": "Responds with a comment object of the given comment_id",
+    "description": "Responds with a comment object of the given comment_id.",
     "queries": [],
     "exampleResponse": {
       "comment": {
@@ -140,7 +140,7 @@
     }
   }, 
   "DELETE /api/comments/:comment_id": {
-    "description" : "Responds with no content and deletes coment of given",
+    "description" : "Responds with no content and deletes comment of given comment_id.",
     "queries": [],
     "exampleResponse": {}
   }

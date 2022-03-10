@@ -51,6 +51,7 @@ exports.selectComments = () => {
     });
 }
 
+
 exports.removeComment = (comment_id) => {
     return db.query(
         `DELETE from comments
