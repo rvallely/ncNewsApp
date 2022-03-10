@@ -1,25 +1,41 @@
 const { insertComment, selectComments, removeComment, selectComment } = require('../models/comments.models.js');
-const { checkArticleIdExists, checkCommentKeys, checkCommentExists } = require('../utils/utils.js');
+const { checkArticleIdExists, checkCommentKeys, checkCommentExists, checkUserExists } = require('../utils/utils.js');
 
 exports.postComment = (req, res, next) => {
     const article_id = req.params.article_id;
     const newComment = req.body;
-    const bothKeysPresent = checkCommentKeys(newComment) 
+
+    const bothKeysPresent = checkCommentKeys(newComment);
         if (bothKeysPresent) {
             return checkArticleIdExists(article_id).then((articleExists) => {
+
                 if (articleExists) {
-                    insertComment(article_id, newComment).then((comment) => {
-                        res.status(201).send({ comment : comment });
+                    return checkUserExists(newComment.username).then((userExists) => {
+                        if (userExists === true) {
+                            insertComment(article_id, newComment).then((comment) => {
+                                res.status(201).send({ comment : comment });
+                            });
+                        } else {
+                            return Promise.reject({ status: 400, msg: 'Bad Request: User not in the database' })
+                            .catch((err) => {
+                              next(err);
+                            });
+                        }
                     });
+                    
                 } else {
                     return Promise.reject({ status: 404, msg: 'Not Found' })
+                    .catch((err) => {
+                        next(err);
+                   });
                 }
             }) 
             .catch((err) => {
                 next(err);
            });
         } else {
-            return Promise.reject({ status: 400, msg: 'Bad Request: missing field(s)' }).catch((err) => {
+            return Promise.reject({ status: 400, msg: 'Bad Request: missing field(s)' })
+            .catch((err) => {
                 next(err);
             });  
         } 

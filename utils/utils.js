@@ -94,9 +94,10 @@ exports.checkUserExists = (username) => {
 }
 
 exports.checkUsernameValid = (username) => {
-    if (username.length <= 30) {
-        return true;
-    } else {
-        return false;
+    if (username.length > 30) {
+        return 'chars over 30';
     }
+    else if (username.length <= 30){
+        return true;
+    }   
 }

@@ -13,7 +13,7 @@ exports.getUsers = (req, res, next) => {
 exports.getSingleUser = (req, res, next) => {
     const username = req.params.username;
     const usernameValid = checkUsernameValid(username);
-    
+
     if (usernameValid === true) {
         return checkUserExists(username).then((userExists) => {
             if (userExists) {
@@ -27,7 +27,8 @@ exports.getSingleUser = (req, res, next) => {
                 });
             }
         });
-    } else {
+    } 
+    else if (usernameValid === 'chars over 30') {
         return Promise.reject({ status: 400, msg: 'Bad Request: Username cannot exceed 30 characters.' })
         .catch((err) => {
             next(err);

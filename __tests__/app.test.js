@@ -710,7 +710,7 @@ describe('/api/articles/:article_id/comments', () => {
                 });
               });
         });
-        test('Responds with a status of 201 and a posted comment object when username value is not already in the database', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request: User not in the database\' error message if the user is not already in the database.', () => {
             const article_id = 5;
             const newComment = { 
                 body: 'Test comment.',
@@ -719,17 +719,9 @@ describe('/api/articles/:article_id/comments', () => {
             return request(app)
               .post(`/api/articles/${article_id}/comments`)
               .send(newComment)
-              .expect(201)
+              .expect(400)
               .then((res) => {
-                  const postedComment = res.body.comment;
-                  expect(postedComment).toMatchObject({
-                    comment_id: 19,
-                    author: 'new_user',
-                    article_id: 5,
-                    votes: 0,
-                    created_at: expect.any(String),
-                    body: 'Test comment.'
-                  });
+                  expect(res.body.msg).toBe('Bad Request: User not in the database')
               });
         });
         test('Responds with a status 400 and a \'Bad Request: missing field(s)\' error message when the comment has undefined values.', () => {
@@ -869,7 +861,7 @@ describe('/api/users', () => {
     });
 });  
 
-describe.only('/api/users/:username', () => {
+describe('/api/users/:username', () => {
     describe('GET', () => {
         test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name.', () => {
         const username = 'icellusedkars';
@@ -905,7 +897,6 @@ describe.only('/api/users/:username', () => {
                 expect(response.body.msg).toBe('Bad Request: Username cannot exceed 30 characters.');
               });
         });
-      
 }); 
 
 describe('/api', () => {
