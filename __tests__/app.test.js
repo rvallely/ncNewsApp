@@ -849,9 +849,9 @@ describe('/api/comments/:comment_id', () => {
 });
 });
 
-describe.only('/api/users', () => {
-    describe.only('GET', () => {
-        test.only('Responds with status 200 and an array of all user objects available. Each user object has property username', () => {
+describe('/api/users', () => {
+    describe('GET', () => {
+        test('Responds with status 200 and an array of all user objects available. Each user object has property username', () => {
         return request(app)
           .get('/api/users')
           .expect(200)
@@ -868,6 +868,26 @@ describe.only('/api/users', () => {
         });
     });
 });  
+
+describe.only('/api/users/:username', () => {
+    describe.only('GET', () => {
+        test.only('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name.', () => {
+        const username = 'icellusedkars';
+        return request(app)
+          .get(`/api/users/${username}`)
+          .expect(200)
+          .then((response) => {  
+              const user = response.body.user;
+              expect(typeof user).toBe('object');
+              expect(user).toMatchObject({ 
+                username: 'icellusedkars',
+                avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
+                name: 'sam'
+            });
+          });
+        });
+    });
+}); 
 
 describe('/api', () => {
     describe('GET', () => {

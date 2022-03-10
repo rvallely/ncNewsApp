@@ -7,3 +7,13 @@ exports.selectUsers = () => {
         return users;
     });
 }
+
+exports.selectSingleUser = (username) => {
+    return db.query(
+        `SELECT * FROM users
+        WHERE username = $1;`, [username])
+    .then((result) => {
+        const user = result.rows[0];
+        return user;
+    });
+}
