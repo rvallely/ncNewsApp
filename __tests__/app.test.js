@@ -849,6 +849,26 @@ describe('/api/comments/:comment_id', () => {
 });
 });
 
+describe.only('/api/users', () => {
+    describe.only('GET', () => {
+        test.only('Responds with status 200 and an array of all user objects available. Each user object has property username', () => {
+        return request(app)
+          .get('/api/users')
+          .expect(200)
+          .then((response) => {  
+              const users = response.body.users;
+              expect(Array.isArray(users)).toBe(true);
+              users.forEach((user) => {
+                  expect(typeof user).toBe('object');
+                  expect(user.hasOwnProperty('username'));
+                  expect(typeof user.username).toBe('string');
+                  expect(user.username.length).toBeGreaterThan(0);
+              }); 
+          });
+        });
+    });
+});  
+
 describe('/api', () => {
     describe('GET', () => {
         test('Responds with JSON describing all the available endpoints on the API.', () => {

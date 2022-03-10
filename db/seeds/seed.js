@@ -25,7 +25,7 @@ const seed = (data) => {
           `CREATE TABLE users (
             username VARCHAR(30) PRIMARY KEY NOT NULL,
             avatar_url VARCHAR(2048), 
-            name VARCHAR(50) 
+            name VARCHAR(50) NOT NULL
           );`
         )
       })

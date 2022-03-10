@@ -143,7 +143,20 @@
     "description" : "Responds with no content and deletes comment of given comment_id.",
     "queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "Responds with an array of user objects. Each user property has a single property username.",
+    "queries": [],
+    "exampleResponse": { 
+      "users":[
+        { "username": "butter_bridge" },
+        { "username": "icellusedkars" },
+        { "username": "rogersop" },
+        { "username": "lurker" }
+      ] 
+    }
   }
 }
+
 
 
