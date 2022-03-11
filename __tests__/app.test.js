@@ -850,6 +850,7 @@ describe('/api/users', () => {
           .then((response) => {  
               const users = response.body.users;
               expect(Array.isArray(users)).toBe(true);
+              expect(users.length).toBeGreaterThan(0);
               users.forEach((user) => {
                   expect(typeof user).toBe('object');
                   expect(user.hasOwnProperty('username'));
