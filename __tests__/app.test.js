@@ -744,7 +744,7 @@ describe('/api/articles/:article_id/comments', () => {
 
 describe('/api/comments/:comment_id', () => {
     describe('GET', () => {
-        test('Responds with comment object of given a comment_id, when comment exists.', () => {
+        test('Responds with status 200 and a comment object of given comment_id, when comment exists.', () => {
             const comment_id = 7;
             return request(app)
               .get(`/api/comments/${comment_id}`)
@@ -836,6 +836,125 @@ describe('/api/comments/:comment_id', () => {
               .then((res) => {
                   expect(res.body.msg).toBe('Not Found')
               });
+        });
+    });
+    describe('PATCH', () => {
+        test('Responds with a status 200 and an updated comment object, when inc_votes value is positive.', () => {
+            const comment_id = 7;
+            const voteChange = { inc_votes: 1 };
+            return request(app).get(`/api/comments/${comment_id}`).then((res)=> {
+                votesBefore = res.body.comment.votes;
+        
+                return request(app)
+                  .patch(`/api/comments/${comment_id}`)
+                  .expect(200)
+                  .send(voteChange)
+                  .then((response) => {
+                      const updatedComment = response.body.updatedComment;
+                      expect(updatedComment).toMatchObject({
+                        comment_id: 7, 
+                        author: 'icellusedkars',
+                        article_id: 1, 
+                        votes: 1, 
+                        created_at: '2020-05-15T20:19:00.000Z', 
+                        body: 'Lobster pot'
+                      });
+
+                      expect(updatedComment.votes).toBe(votesBefore + voteChange.inc_votes);
+                    });
+                  });
+
+        })
+        test('Responds with a status 200 and an updated comment object, when inc_votes value is negative.', () => {
+            const comment_id = 7;
+            const voteChange = { inc_votes: -1 };
+
+            return request(app).get(`/api/comments/${comment_id}`).then((res)=> {
+                votesBefore = res.body.comment.votes;
+
+                return request(app)
+                  .patch(`/api/comments/${comment_id}`)
+                  .expect(200)
+                  .send(voteChange)
+                  .then((response) => {
+                      const updatedComment = response.body.updatedComment;
+                      expect(updatedComment).toMatchObject({
+                        comment_id: 7, 
+                        author: 'icellusedkars',
+                        article_id: 1, 
+                        votes: -1, 
+                        created_at: '2020-05-15T20:19:00.000Z', 
+                        body: 'Lobster pot'
+                      });
+                
+                      expect(updatedComment.votes).toBe(votesBefore + voteChange.inc_votes);
+                  });
+            });
+        });
+        test('Responds with a status 200 and an unchanged comment object, when inc_votes value is missing.', () => {
+            const comment_id = 7;
+            const voteChange = {mising_key: 1};
+            return request(app).get(`/api/comments/${comment_id}`).then((res)=> {
+                votesBefore = res.body.comment.votes;
+        
+                return request(app)
+                  .patch(`/api/comments/${comment_id}`)
+                  .expect(200)
+                  .send(voteChange)
+                  .then((response) => {
+                      const updatedComment = response.body.updatedComment;
+                      expect(updatedComment).toMatchObject({
+                        comment_id: 7, 
+                        author: 'icellusedkars',
+                        article_id: 1, 
+                        votes: 0, 
+                        created_at: '2020-05-15T20:19:00.000Z', 
+                        body: 'Lobster pot'
+                      });
+
+                      expect(updatedComment.votes).toEqual(votesBefore);
+                    });
+                  });
+
+        });
+        test('Responds with a status 400 and an error message \'Bad Request: Invalid data type\' when inc_votes value is not a number.', () => {
+            const comment_id = 7;
+            const voteChange = { inc_votes: 'not_a_number' };
+
+                return request(app)
+                  .patch(`/api/comments/${comment_id}`)
+                  .expect(400)
+                  .send(voteChange)
+                  .then((response) => {
+                      const msg = response.body.msg;
+                      expect(msg).toBe('Bad Request: Invalid data type');
+                  });
+        });
+        test('Responds with a status 400 and an error message \'Bad Request: Invalid data type\' when comment_id is not a number.', () => {
+            const comment_id = 'seven';
+            const voteChange = { inc_votes: 1 };
+
+                return request(app)
+                  .patch(`/api/comments/${comment_id}`)
+                  .expect(400)
+                  .send(voteChange)
+                  .then((response) => {
+                      const msg = response.body.msg;
+                      expect(msg).toBe('Bad Request: Invalid data type');
+                  });
+        });
+        test('Responds with a status 404 and an error message \'Not Found: comment id does not exist\' when comment_id is valid because it is a number, but does not yet exist.', () => {
+            const comment_id = 999;
+            const voteChange = { inc_votes: 1 };
+
+                return request(app)
+                  .patch(`/api/comments/${comment_id}`)
+                  .expect(404)
+                  .send(voteChange)
+                  .then((response) => {
+                      const msg = response.body.msg;
+                      expect(msg).toBe('Not Found: comment id does not exist');
+                  });
         });
     });
 });

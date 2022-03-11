@@ -1,3 +1,4 @@
+const { type } = require('express/lib/response');
 const { rows } = require('pg/lib/defaults');
 const db = require('../db/connection.js');
 
@@ -26,16 +27,19 @@ exports.checkCommentKeys = (newComment) => {
 }
 
 exports.checkCommentExists = (comment_id) => {
-    if (comment_id < 1) {
+    if (Number(comment_id) < 1) {
         comment_id = 'Invalid comment id';
     }
     return db.query(
         `SELECT * FROM comments
         WHERE comment_id = $1`, [comment_id]
     ).then((result) => {
+  
         if (result.rows.length > 0) {
+          
             return true;
         } else {
+       
             return false;
         }
     });
@@ -100,4 +104,14 @@ exports.checkUsernameValid = (username) => {
     else if (username.length <= 30){
         return true;
     }   
+}
+
+exports.checkValuesValid = (patchObj, comment_id) => {
+    result = true;
+    if (typeof patchObj.inc_votes === 'number' &&  /[\d]+/.test(comment_id)) {
+        result = true;
+    } else {
+        result = false;
+    }
+    return result;
 }

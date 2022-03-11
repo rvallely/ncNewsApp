@@ -1,3 +1,4 @@
+const { patch } = require('../app.js');
 const db = require('../db/connection.js');
 
 exports.insertComment = (article_id, newComment) => {
@@ -71,3 +72,17 @@ exports.selectComment = (comment_id) => {
         return comment;
     });
 }
+
+exports.updateComment = (comment_id, patchObj) => {
+    const voteChange = patchObj.inc_votes;
+    return db.query(
+        `UPDATE comments
+        SET votes = votes + $2
+        WHERE comment_id = $1
+        RETURNING *;`, [comment_id, voteChange])
+        .then((result) => {
+            const updatedComment = result.rows[0];
+            return updatedComment;
+        });
+}
+

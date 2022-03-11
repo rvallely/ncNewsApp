@@ -1,5 +1,5 @@
-const { insertComment, selectComments, removeComment, selectComment } = require('../models/comments.models.js');
-const { checkArticleIdExists, checkCommentKeys, checkCommentExists, checkUserExists } = require('../utils/utils.js');
+const { insertComment, selectComments, removeComment, selectComment, updateComment } = require('../models/comments.models.js');
+const { checkArticleIdExists, checkCommentKeys, checkCommentExists, checkUserExists, checkValuesValid } = require('../utils/utils.js');
 
 exports.postComment = (req, res, next) => {
     const article_id = req.params.article_id;
@@ -77,4 +77,41 @@ exports.getComment = (req, res, next) => {
     .catch((err) => {
         next(err);
     });
+}
+
+exports.patchComment = (req, res, next) => {
+    let comment_id = req.params.comment_id;  
+    let patchObj = req.body;
+
+    if (!patchObj.hasOwnProperty('inc_votes')) {
+    
+       patchObj = { inc_votes: 0 };
+    } 
+
+    const valuesValid = checkValuesValid(patchObj, comment_id);
+
+        if (valuesValid === true) {
+
+            return checkCommentExists(comment_id).then((commentExists) => {
+                if (commentExists) {
+                    updateComment(comment_id, patchObj).then((updatedComment) => {
+                        res.status(200).send({ updatedComment: updatedComment });
+                    })
+                    .catch((err) => {
+                        next(err);
+                    });
+                } else {
+                    return Promise.reject({ status: 404, msg: 'Not Found: comment id does not exist' })
+                    .catch((err) => {
+                         next(err);
+                    });
+                }
+            });
+        } 
+        else if (valuesValid === false) {
+            return Promise.reject({ status: 400, msg: 'Bad Request: Invalid data type' })
+            .catch((err) => {
+                next(err);
+            });
+        }
 }
