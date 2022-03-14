@@ -1,11 +1,10 @@
-# Northcoders News API
+# NC News
 
 ## Background
 
-We will be building an API for the purpose of accessing application data programmatically. The intention here is to mimic the building of a real world backend service (such as reddit) which should provide this information to the front end architecture.
+NC-News is a web application built. This the the backend API for my NC News application. It was built uing PSQL and JavaScript. Each endpoint has been tested and includes appropriate error handling.
 
-Your database will be PSQL, and you will interact with it using [node-postgres](https://node-postgres.com/).
-
+The hosted version is here https://rosie-nc-news-app.herokuapp.com/api
 
 ## Step 1 - Setting up your project
 
