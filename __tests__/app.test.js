@@ -108,7 +108,7 @@ describe('/api/articles/:article_id', () => {
               .get(`/api/articles/${article_id}`)
               .expect(404)
               .then((res) => {
-                  expect(res.body.msg).toBe('Not Found');
+                  expect(res.body.msg).toBe('Not Found: this article does not exist.');
               });
         }); 
     });

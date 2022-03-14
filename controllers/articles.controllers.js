@@ -9,7 +9,7 @@ exports.getArticleById = (req, res, next) => {
                        res.status(200).send({ article: article })
                    });
         } else {
-            return Promise.reject({ status: 404, msg: 'Not Found' })
+            return Promise.reject({ status: 404, msg: 'Not Found: this article does not exist.' })
         }
     })
     .catch((err) => {
