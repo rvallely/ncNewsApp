@@ -84,22 +84,22 @@ describe('/api/articles/:article_id', () => {
                   });
               });
         });
-        test('Responds with status 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is the wrong data type.', () => {
+        test('Responds with status 400 and returns a \'Bad Request: invalid data.\' error message, if article_id is invalid because it is the wrong data type.', () => {
             const invalid_article_id = 'two';
             return request(app)
               .get(`/api/articles/${invalid_article_id }`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         }); 
-        test('Responds with status 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is a number below 1.', () => {
+        test('Responds with status 400 and returns a \'Bad Request: invalid data.\' error message, if article_id is invalid because it is a number below 1.', () => {
             const invalid_article_id = -1;
             return request(app)
               .get(`/api/articles/${invalid_article_id}`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         }); 
         test('Responds with status 404 and returns a \'Not Found\' error message, if article_id is valid because it is a number >= 1, but doesn\'t yet exist.', () => {
@@ -214,7 +214,7 @@ describe('/api/articles/:article_id', () => {
               });
                   
         });
-        test('Responds with a status of 400 and a \'Bad Request\' error message when article_id is not a number >= 1.', () => {
+        test('Responds with a status of 400 and a \'Bad Request: invalid data.\' error message when article_id is not a number >= 1.', () => {
             const articleId = -20;
             const updateVotes = { inc_votes: 50};
             return request(app)
@@ -222,10 +222,10 @@ describe('/api/articles/:article_id', () => {
               .send(updateVotes)
               .expect(400)
               .then((res)=> {
-                expect(res.body.msg).toBe('Bad Request');
+                expect(res.body.msg).toBe('Bad Request: invalid data.');
               });      
         });
-        test('Responds with a status of 400 and a \'Bad Request\' error message when article_id is not a number >= 1.', () => {
+        test('Responds with a status of 400 and a \'Bad Request: invalid data.\' error message when article_id is not a number >= 1.', () => {
             const articleId = 'fifty';
             const updateVotes = { inc_votes: 50};
             return request(app)
@@ -233,7 +233,7 @@ describe('/api/articles/:article_id', () => {
               .send(updateVotes)
               .expect(400)
               .then((res)=> {
-                expect(res.body.msg).toBe('Bad Request');
+                expect(res.body.msg).toBe('Bad Request: invalid data.');
               });      
         });
         test('Responds with a status of 404 and a \'Not Found\' error message when article_id is a number >= 1, but does not exist.', () => {
@@ -247,6 +247,55 @@ describe('/api/articles/:article_id', () => {
                 expect(res.body.msg).toBe('Not Found');
               });      
         });            
+    });
+    describe('DELETE', () => {
+        test('Responds with status 204 and no content. Deletes article by article_id given, when article exists.', () => {
+            const article_id = 7;
+            let articleNumberBefore = undefined;
+            return request(app).get('/api/articles').then((res) => {
+                articleNumberBefore = res.body.articles.length;
+                return request(app)
+                  .delete(`/api/articles/${article_id}`)
+                  .expect(204)
+                  .then((res) => {
+                    expect(res.body).toEqual({});
+                    let articleNumberAfter = undefined;
+                    return request(app)
+                      .get('/api/articles')
+                      .then((res) => {
+                        articleNumberAfter = res.body.articles.length;
+                        expect(articleNumberAfter).toBe(articleNumberBefore - 1)
+                    });            
+                  }); 
+            });
+        });
+        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the article_id is invalid because it is a number < 1.', () => {
+            const article_id = -17;
+            return request(app)
+              .delete(`/api/articles/${article_id}`)
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request: invalid data.')
+              });
+        });
+        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the article_id is invalid because it is the wrong data type.', () => {
+            const article_id = { article_id: 3 };
+            return request(app)
+              .delete(`/api/articles/${article_id}`)
+              .expect(400)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Bad Request: invalid data.')
+              });
+        });
+        test('Responds with a status of 404 and \'Not Found: this article does not exist.\' error message if the article_id is valid because it is a number >= 1, but does not exist.', () => {
+            const article_id = 20;
+            return request(app)
+              .delete(`/api/articles/${article_id}`)
+              .expect(404)
+              .then((res) => {
+                  expect(res.body.msg).toBe('Not Found: this article does not exist.')
+              });
+        });
     });
 });
 
@@ -568,22 +617,22 @@ describe('/api/articles/:article_id/comments', () => {
                 expect(comments.length).toBe(0);
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is the wrong data type.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if article_id is invalid because it is the wrong data type.', () => {
             const invalid_id = 'two';
             return request(app)
               .get(`/api/articles/${invalid_id}/comments`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is a number below 1.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if article_id is invalid because it is a number below 1.', () => {
             const invalid_id = -25;
             return request(app)
               .get(`/api/articles/${invalid_id}/comments`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
         test('Responds with status 404 and returns a \'Not Found\' error message, if article_id is valid because it is a number >= 1, but doesn\'t yet exist.', () => {
@@ -632,7 +681,7 @@ describe('/api/articles/:article_id/comments', () => {
                       });
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is the wrong data type.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if article_id is invalid because it is the wrong data type.', () => {
             const invalid_id = 'two';
             const newComment = { 
                 body: 'Test comment.',
@@ -643,10 +692,10 @@ describe('/api/articles/:article_id/comments', () => {
               .send(newComment)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if article_id is invalid because it is a number below 1.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if article_id is invalid because it is a number below 1.', () => {
             const invalid_id = 0;
             const newComment = { 
                 body: 'Test comment.',
@@ -657,7 +706,7 @@ describe('/api/articles/:article_id/comments', () => {
               .send(newComment)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
         test('Responds with a status of 404 and returns a \'Not Found\' error message, if article_id is valid because it is a number >= 1, but doesn\'t yet exist.', () => {
@@ -761,22 +810,22 @@ describe('/api/comments/:comment_id', () => {
                   });
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if comment_id is invalid because it is a number below 1.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if comment_id is invalid because it is a number below 1.', () => {
             const comment_id = -2;
             return request(app)
               .get(`/api/comments/${comment_id}`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request\' error message, if comment_id is invalid because it is the wrong data type.', () => {
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if comment_id is invalid because it is the wrong data type.', () => {
             const comment_id = 'three';
             return request(app)
               .get(`/api/comments/${comment_id}`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request');
+                  expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
         test('Responds with a status of 404 and returns a \'Not Found\' error message, if comment_id is valid because it is a number >= 1, but doesn\'t yet exist.', () => {
@@ -810,22 +859,22 @@ describe('/api/comments/:comment_id', () => {
                   }); 
             });
         });
-        test('Responds with a status of 400 and \'Bad Request\' error message if the comment_id is invalid because it is a number < 1.', () => {
+        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the comment_id is invalid because it is a number < 1.', () => {
             const comment_id = -17;
             return request(app)
               .delete(`/api/comments/${comment_id}`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request')
+                  expect(res.body.msg).toBe('Bad Request: invalid data.')
               });
         });
-        test('Responds with a status of 400 and \'Bad Request\' error message if the comment_id is invalid because it is the wrong data type.', () => {
+        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the comment_id is invalid because it is the wrong data type.', () => {
             const comment_id = { comment_id: 3 };
             return request(app)
               .delete(`/api/comments/${comment_id}`)
               .expect(400)
               .then((res) => {
-                  expect(res.body.msg).toBe('Bad Request')
+                  expect(res.body.msg).toBe('Bad Request: invalid data.')
               });
         });
         test('Responds with a status of 404 and \'Not Found\' error message if the comment_id is valid because it is a number >= 1, but does not exist.', () => {

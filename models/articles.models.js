@@ -1,5 +1,4 @@
 const db = require('../db/connection.js');
-const comments = require('../db/data/test-data/comments.js');
 
 exports.selectArticleById = (article_id) => {
     return db.query(
@@ -102,5 +101,15 @@ exports.selectComments = (article_id ) => {
     ).then((result) => {
         const comments = result.rows;
         return comments;
+    });
+}
+
+
+exports.removeArticle = (article_id) => {
+    return db.query(
+        `DELETE from articles
+        WHERE article_id = $1`, [article_id]
+    ).then((result) => {
+        return result.rows;
     });
 }

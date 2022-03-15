@@ -1,4 +1,4 @@
-const { selectArticleById, updateArticle, selectArticles, selectComments } = require('../models/articles.models.js');
+const { selectArticleById, updateArticle, selectArticles, selectComments, removeArticle } = require('../models/articles.models.js');
 const { checkArticleIdExists, checkPatchKeys, checkColumnExists, checkTopicExists } = require('../utils/utils.js');
 
 exports.getArticleById = (req, res, next) => {
@@ -81,6 +81,22 @@ exports.getCommentsForArticleId = (req, res, next) => {
             return Promise.reject({ status: 404, msg: 'Not Found' })
         }
     })
+    .catch((err) => {
+        next(err);
+    });
+}
+
+exports.deleteArticle = (req, res, next) => {
+    const article_id = req.params.article_id;
+    return checkArticleIdExists(article_id).then((articleExists) => {
+        if(articleExists) {
+            removeArticle(article_id).then((article) => {
+                res.status(204).send(article);
+            })
+        } else {
+            return Promise.reject({ status: 404, msg: 'Not Found: this article does not exist.' });
+        }
+    })    
     .catch((err) => {
         next(err);
     });
