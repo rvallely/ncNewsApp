@@ -8,10 +8,7 @@ const { handle404s, handleCustomErrors, handleServerErrors, handlePsqlErrors } =
 const endpoints = require('./endpoints');
 const cors = require('cors');
 
-app.use(cors(
-    { origin: '*' , 
-      methods: ['GET, DELETE, POST, PATCH']}
-));
+app.use(cors());
 app.use(express.json());
 
 app.get('/api/topics', getTopics);
