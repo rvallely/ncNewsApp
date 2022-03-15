@@ -248,31 +248,28 @@ describe('/api/articles/:article_id', () => {
               });      
         });            
     });
-  /*  describe('DELETE', () => {
-        test('Responds with status 204 and no content. Deletes article by article_id given, when article exists.', () => {
+    describe('PATCH', () => {
+        test('Responds with status 200 and updated article object. Removes the content of article by article_id given, when article exists.', () => {
             const article_id = 7;
-            let articleNumberBefore = undefined;
-            return request(app).get('/api/articles').then((res) => {
-                articleNumberBefore = res.body.articles.length;
                 return request(app)
-                  .delete(`/api/articles/${article_id}`)
-                  .expect(204)
+                  .patch(`/api/articles/remove/${article_id}`)
+                  .expect(200)
                   .then((res) => {
-                    expect(res.body).toEqual({});
-                    let articleNumberAfter = undefined;
-                    return request(app)
-                      .get('/api/articles')
-                      .then((res) => {
-                        articleNumberAfter = res.body.articles.length;
-                        expect(articleNumberAfter).toBe(articleNumberBefore - 1)
-                    });            
+                    expect(res.body).toMatchObject({
+                        article_id: 7,
+                        title: 'Article does not exist',
+                        body: "Whoops, looks like this content has been deleted. We're sorry about that.",
+                        votes: 0,
+                        topic: 'mitch',
+                        author: 'icellusedkars',
+                        created_at: '2020-01-07T14:08:00.000Z'
+                    });
                   }); 
-            });
         });
         test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the article_id is invalid because it is a number < 1.', () => {
             const article_id = -17;
             return request(app)
-              .delete(`/api/articles/${article_id}`)
+              .patch(`/api/articles/remove/${article_id}`)
               .expect(400)
               .then((res) => {
                   expect(res.body.msg).toBe('Bad Request: invalid data.')
@@ -281,7 +278,7 @@ describe('/api/articles/:article_id', () => {
         test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the article_id is invalid because it is the wrong data type.', () => {
             const article_id = { article_id: 3 };
             return request(app)
-              .delete(`/api/articles/${article_id}`)
+              .patch(`/api/articles/remove/${article_id}`)
               .expect(400)
               .then((res) => {
                   expect(res.body.msg).toBe('Bad Request: invalid data.')
@@ -290,13 +287,13 @@ describe('/api/articles/:article_id', () => {
         test('Responds with a status of 404 and \'Not Found: this article does not exist.\' error message if the article_id is valid because it is a number >= 1, but does not exist.', () => {
             const article_id = 20;
             return request(app)
-              .delete(`/api/articles/${article_id}`)
+              .patch(`/api/articles/remove/${article_id}`)
               .expect(404)
               .then((res) => {
                   expect(res.body.msg).toBe('Not Found: this article does not exist.')
               });
         });
-    });*/
+    });
 });
 
 describe('/api/articles', () => {

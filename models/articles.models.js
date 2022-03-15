@@ -105,11 +105,13 @@ exports.selectComments = (article_id ) => {
 }
 
 
-exports.removeArticle = (article_id) => {
+exports.removeArticle = (article_id, deletedValues) => {
     return db.query(
-        `DELETE from articles
-        WHERE article_id = $1`, [article_id]
+        `UPDATE articles
+        SET title = $2, body = $3, votes = $4
+        WHERE article_id = $1
+        RETURNING *;`, [article_id, deletedValues.title, deletedValues.body, deletedValues.votes]
     ).then((result) => {
-        return result.rows;
+        return result.rows[0];
     });
 }

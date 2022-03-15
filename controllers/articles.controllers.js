@@ -88,10 +88,16 @@ exports.getCommentsForArticleId = (req, res, next) => {
 
 exports.deleteArticle = (req, res, next) => {
     const article_id = req.params.article_id;
+    const deletedValues = {
+        title : 'Article does not exist', 
+        body : 'Whoops, looks like this content has been deleted. We\'re sorry about that.', 
+        votes: 0, 
+    }
+  
     return checkArticleIdExists(article_id).then((articleExists) => {
         if(articleExists) {
-            removeArticle(article_id).then((article) => {
-                res.status(204).send(article);
+            removeArticle(article_id, deletedValues).then((blankArticle) => {
+                res.status(200).send(blankArticle);
             })
         } else {
             return Promise.reject({ status: 404, msg: 'Not Found: this article does not exist.' });
