@@ -9,7 +9,8 @@ const endpoints = require('./endpoints');
 const cors = require('cors');
 
 app.use(cors(
-    { origin: '*' }
+    { origin: '*' , 
+      methods: ['GET, DELETE, POST, PATCH']}
 ));
 app.use(express.json());
 
