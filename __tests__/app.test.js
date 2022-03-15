@@ -248,7 +248,7 @@ describe('/api/articles/:article_id', () => {
               });      
         });            
     });
-    describe('DELETE', () => {
+  /*  describe('DELETE', () => {
         test('Responds with status 204 and no content. Deletes article by article_id given, when article exists.', () => {
             const article_id = 7;
             let articleNumberBefore = undefined;
@@ -296,7 +296,7 @@ describe('/api/articles/:article_id', () => {
                   expect(res.body.msg).toBe('Not Found: this article does not exist.')
               });
         });
-    });
+    });*/
 });
 
 describe('/api/articles', () => {
