@@ -1,4 +1,4 @@
-const { selectArticleById, updateArticle, selectArticles, selectComments } = require('../models/articles.models.js'); //removeArticle
+const { selectArticleById, updateArticle, selectArticles, selectComments, removeArticle } = require('../models/articles.models.js'); //removeArticle
 const { checkArticleIdExists, checkPatchKeys, checkColumnExists, checkTopicExists } = require('../utils/utils.js');
 
 exports.getArticleById = (req, res, next) => {
@@ -86,7 +86,7 @@ exports.getCommentsForArticleId = (req, res, next) => {
     });
 }
 
-/*exports.deleteArticle = (req, res, next) => {
+exports.deleteArticle = (req, res, next) => {
     const article_id = req.params.article_id;
     return checkArticleIdExists(article_id).then((articleExists) => {
         if(articleExists) {
@@ -100,4 +100,4 @@ exports.getCommentsForArticleId = (req, res, next) => {
     .catch((err) => {
         next(err);
     });
-}*/
+}
