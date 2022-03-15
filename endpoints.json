@@ -86,6 +86,11 @@
         "comment_count": 12
       }
     }
+  }, 
+  "DELETE /api/articles/:article_id": {
+    "description" : "Responds with no content and deletes article of given article_id.",
+    "queries": [],
+    "exampleResponse": {}
   },
   "GET /api/articles/:article_id/comments": {
     "description" : "Responds with an array of comment objects for the given article id.", 
