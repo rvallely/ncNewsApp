@@ -9,7 +9,7 @@ const endpoints = require('./endpoints');
 const cors = require('cors');
 
 app.use(cors(
-    { origin: 'http://localhost:3000' }
+    { origin: '*' }
 ));
 app.use(express.json());
 
