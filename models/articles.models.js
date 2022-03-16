@@ -104,7 +104,6 @@ exports.selectComments = (article_id ) => {
     });
 }
 
-
 exports.removeArticle = (article_id, deletedValues) => {
     return db.query(
         `UPDATE articles
@@ -117,46 +116,15 @@ exports.removeArticle = (article_id, deletedValues) => {
 }
 
 exports.insertArticle = (article) => {
-    // const body = newComment.body
-    // const author = newComment.username
-
-    console.log('in model ', article )
-    // return db.query(
-    //     `SELECT * FROM users
-    //     WHERE username = $1;`, [author]
-    // ).then((result) => {
-    //     if (result.rows.length === 0) {
-            // return db.query(
-            //     `INSERT INTO users 
-            //     (username)
-            //     VALUES
-            //     ($1);`, [author]
-            // ) 
-            // .then(() => {
-                return db.query(
-                    `INSERT INTO articles
-                    (author, title, body, topic)
-                    VALUES 
-                    ($1, $2, $3, $4)
-                    RETURNING *;`, [article.author, article.title, article.body, article.topic]
-                ).then((result) => {
-                    const newArticle = result.rows[0];
-                    newArticle.comment_count = 0;
-                    console.log(newArticle)
-                    return newArticle;
-                });
-          //  });
-        // } else {
-        //     return db.query(
-        //         `INSERT INTO comments
-        //         (author, article_id, body)
-        //         VALUES 
-        //         ($1, $2, $3)
-        //         RETURNING *;`, [author, article_id, body]
-        //     ).then((result) => {
-        //         const newComment = result.rows;
-        //         return newComment[0];
-        //     });
-        // }  
-  //  });
+    return db.query(
+        `INSERT INTO articles
+        (author, title, body, topic)
+        VALUES 
+        ($1, $2, $3, $4)
+        RETURNING *;`, [article.author, article.title, article.body, article.topic]
+    ).then((result) => {
+        const newArticle = result.rows[0];
+        newArticle.comment_count = 0;
+        return newArticle;
+    });
 }

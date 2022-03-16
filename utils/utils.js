@@ -70,8 +70,8 @@ exports.checkColumnExists = (query) => {
 
 exports.checkTopicExists = (topic) => {
     return db.query(
-        `SELECT * FROM articles
-        WHERE topic = $1`, [topic]
+        `SELECT * FROM topics
+        WHERE slug = $1`, [topic]
     ).then((result) => {
         if (topic === undefined) {
             return true;
@@ -115,3 +115,19 @@ exports.checkValuesValid = (patchObj, comment_id) => {
     }
     return result;
 }
+
+exports.checkReqValid = (article) => {
+    if (article.hasOwnProperty('author') &&
+        article.hasOwnProperty('title') &&
+        article.hasOwnProperty('body') &&
+        article.hasOwnProperty('topic') &&
+        article.author.length > 0 &&
+        article.body.length > 0 &&
+        article.title.length > 0 ) 
+    {
+            return true;
+    } else {
+        return false;
+    }
+}
+

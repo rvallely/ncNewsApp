@@ -1,5 +1,5 @@
 const { selectArticleById, updateArticle, selectArticles, selectComments, removeArticle, insertArticle } = require('../models/articles.models.js'); //removeArticle
-const { checkArticleIdExists, checkPatchKeys, checkColumnExists, checkTopicExists } = require('../utils/utils.js');
+const { checkArticleIdExists, checkPatchKeys, checkColumnExists, checkTopicExists, checkUserExists, checkReqValid } = require('../utils/utils.js');
 
 exports.getArticleById = (req, res, next) => {
     const article_id = req.params.article_id;
@@ -110,9 +110,33 @@ exports.deleteArticle = (req, res, next) => {
 
 exports.postArticle = (req, res, next) => {
     const article = req.body;
-    console.log(article);
-    insertArticle(article).then((postedArticle) => {
-        console.log('posted art ', postedArticle);
-        res.status(201).send({ postedArticle: postedArticle });
-    });
+    const requestValid = checkReqValid(article);
+    if (requestValid === true) {
+        return checkUserExists(article.author).then((userExists) => {       
+            if (userExists === true) {
+                return checkTopicExists(article.topic).then((validityCheck) => {
+                    if (validityCheck === 'invalid topic') {
+                        return Promise.reject({ status: 400, msg: 'Bad Request: Topic not in the database.' });
+                    } else {
+                        insertArticle(article).then((postedArticle) => {
+                            res.status(201).send({ postedArticle: postedArticle });
+                        });
+                    }
+                })
+                .catch((err) => {
+                    next(err);
+                });
+            } else {
+                return Promise.reject({ status: 400, msg: 'Bad Request: User not in the database.' })
+                    .catch((err) => {
+                        next(err);
+                    });
+            }
+        });   
+    } else {
+        return Promise.reject({ status: 400, msg: 'Bad Request: Invalid request body.' })
+        .catch((err) => {
+            next(err);
+        });  
+    }
 }

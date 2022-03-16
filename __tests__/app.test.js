@@ -581,7 +581,7 @@ describe('/api/articles', () => {
         });
     });
     describe('POST', () => {
-        test.only('Responds with a status of 201 and posts the article. Responds with an article object with the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count\n        - body', () => {
+        test('Responds with a status of 201 and posts the article. Responds with an article object with the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count\n        - body', () => {
             const newArticle = { 
                 author: 'lurker', 
                 title: 'Testing...testing',
@@ -618,11 +618,54 @@ describe('/api/articles', () => {
                               });
                       });
               });
-        })
-                // user not in database 404
-        // topic in data base 404
-        // no title, body, author, topic 400
-    })
+        });
+        test('Responds with a status of 400 and an error message \'Bad Request: Invalid request body.\', request body has incorrect keys.', () => {
+            const newArticle = { 
+                username: 'non_existent', 
+                line: 'Testing...testing',
+                another_line: 'Test article body.',
+                topic: ''
+            }
+            return request(app)
+            .post('/api/articles/')
+            .send(newArticle)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad Request: Invalid request body.');
+            });
+        });
+        test('Responds with a status of 400 and an error message \'Bad Request: User not in the database.\', if user is not in the database.', () => {
+            const newArticle = { 
+                author: 'non_existent', 
+                title: 'Testing...testing',
+                body: 'Test article body.',
+                topic: 'paper'
+            }
+            return request(app)
+            .post('/api/articles/')
+            .send(newArticle)
+            .expect(400)
+            .then((response) => {
+      
+                expect(response.body.msg).toBe('Bad Request: User not in the database.');
+            });
+        });
+        test('Responds with a status of 400 and an error message \'Bad Request: Topic not in the database.\', if topic is not in the database.', () => {
+            const newArticle = { 
+                author: 'lurker', 
+                title: 'Testing...testing',
+                body: 'Test article body.',
+                topic: 'not_there'
+            }
+            return request(app)
+            .post('/api/articles/')
+            .send(newArticle)
+            .expect(400)
+            .then((response) => {
+                expect(response.body.msg).toBe('Bad Request: Topic not in the database.');
+            });
+        });    
+    });
 });
 
 describe('/api/articles/:article_id/comments', () => {
