@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const { getTopics } = require('./controllers/topics.controllers.js')
-const { getArticleById, patchArticle, getArticles, deleteArticle, getCommentsForArticleId } = require('./controllers/articles.controllers.js');
+const { getArticleById, patchArticle, getArticles, deleteArticle, getCommentsForArticleId, postArticle } = require('./controllers/articles.controllers.js');
 const { postComment, getComments, deleteComment, getComment, patchComment } = require('./controllers/comments.controllers.js');
 const { getUsers, getSingleUser } = require('./controllers/users.controllers.js');
 const { handle404s, handleCustomErrors, handleServerErrors, handlePsqlErrors } = require('./errors/errors');
@@ -24,6 +24,7 @@ app.get('/api/comments', getComments);
 app.delete('/api/comments/:comment_id', deleteComment);
 app.get('/api/comments/:comment_id', getComment);
 app.patch('/api/comments/:comment_id', patchComment);
+app.post('/api/articles/', postArticle);
 
 app.get('/api/users', getUsers);
 app.get('/api/users/:username', getSingleUser);

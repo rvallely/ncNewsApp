@@ -1,4 +1,4 @@
-const { selectArticleById, updateArticle, selectArticles, selectComments, removeArticle } = require('../models/articles.models.js'); //removeArticle
+const { selectArticleById, updateArticle, selectArticles, selectComments, removeArticle, insertArticle } = require('../models/articles.models.js'); //removeArticle
 const { checkArticleIdExists, checkPatchKeys, checkColumnExists, checkTopicExists } = require('../utils/utils.js');
 
 exports.getArticleById = (req, res, next) => {
@@ -105,5 +105,14 @@ exports.deleteArticle = (req, res, next) => {
     })    
     .catch((err) => {
         next(err);
+    });
+}
+
+exports.postArticle = (req, res, next) => {
+    const article = req.body;
+    console.log(article);
+    insertArticle(article).then((postedArticle) => {
+        console.log('posted art ', postedArticle);
+        res.status(201).send({ postedArticle: postedArticle });
     });
 }

@@ -580,6 +580,49 @@ describe('/api/articles', () => {
               });
         });
     });
+    describe('POST', () => {
+        test.only('Responds with a status of 201 and posts the article. Responds with an article object with the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count\n        - body', () => {
+            const newArticle = { 
+                author: 'jessjelly', 
+                title: 'Testing...testing',
+                body: 'Test article body.',
+                topic: 'coding'
+            }
+            let articleNumberBefore = undefined;
+            return request(app)
+              .get('/api/articles/')
+              .then((res) => {
+                  articleNumberBefore = res.body.articles.length;
+                  return request(app)
+                      .post('/api/articles/')
+                      .send(newArticle)
+                      .expect(201)
+                      .then((response) => {
+                          const postedArticle = response.body.postedArticle;
+                          expect(postedArticle).toMatchObject({ 
+                              article_id: expect.any(Number),
+                              author: 'jessjelly',
+                              title: 'Testing...testing',
+                              body: 'Test article body.',
+                              topic: 'coding',
+                              votes: 0,
+                              created_at: expect.any(String),
+                              comment_count: 0
+                          });
+                          let articleNumberAfter = undefined;
+                          return request(app)
+                              .get('/api/articles')
+                              .then((res) => {
+                                  articleNumberAfter = res.body.articles.length;
+                                  expect(articleNumberAfter).toBe(articleNumberBefore + 1);
+                              });
+                      });
+              });
+        })
+                // user not in database 404
+        // topic in data base 404
+        // no title, body, author, topic 400
+    })
 });
 
 describe('/api/articles/:article_id/comments', () => {
