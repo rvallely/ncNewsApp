@@ -2,9 +2,21 @@
 
 ## Background
 
-NC-News is a web application built. This the the backend API for my NC News application. It was built uing PSQL and JavaScript. Each endpoint has been tested and includes appropriate error handling.
+NC News is a news and social conection web application. Its content is seperated into topics and users are able to vote and comment on articles. This the repo for the backend API for NC News. It was built uing PSQL and JavaScript. Each endpoint has been tested and includes appropriate error handling.
 
 The hosted version is here https://rosie-nc-news-app.herokuapp.com/api
+
+
+Write your README, including the following information:
+ Link to hosted version
+ Write a summary of what the project is
+ Provide clear instructions of how to clone, install dependencies, seed local database, and run tests
+ Include information about how to create the two .env files
+ Specify minimum versions of Node.js and Postgres needed to run the project
+Remember that this README is targetted at people who will come to your repo (potentially from your CV or portfolio website) and want to see what you have created, and try it out for themselves(not just to look at your code!). So it is really important to include a link to the hosted version, as well as implement the above GET /api endpoint so that it is clear what your api does.
+
+
+
 
 ## Step 1 - Setting up your project
 
