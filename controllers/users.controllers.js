@@ -21,7 +21,7 @@ exports.getSingleUser = (req, res, next) => {
                     res.status(200).send({ user: user });
                 })
             } else {
-                return Promise.reject({ status: 404, msg: 'Not Found' })
+                return Promise.reject({ status: 404, msg: 'Not Found: user not on database' })
                 .catch((err) => {
                     next(err);
                 });

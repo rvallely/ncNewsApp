@@ -1044,13 +1044,13 @@ describe('/api/users/:username', () => {
             });
           });
         });
-        test('Responds with status 404  and returns a \'Not Found\' error message, if username is valid because it is a string, but doesn\'t yet exist.', () => {
+        test('Responds with status 404  and returns a \'Not Found: user not on database\' error message, if username is valid because it is a string, but doesn\'t yet exist.', () => {
             const username = 'non_existent_user';
             return request(app)
               .get(`/api/users/${username}`)
               .expect(404)
               .then((response) => {
-                expect(response.body.msg).toBe('Not Found');
+                expect(response.body.msg).toBe('Not Found: user not on database');
               });
             });
         });
