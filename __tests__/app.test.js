@@ -583,10 +583,10 @@ describe('/api/articles', () => {
     describe('POST', () => {
         test.only('Responds with a status of 201 and posts the article. Responds with an article object with the properties:\n        - author\n        - title\n        - article_id\n        - topic\n        - created_at\n        - votes\n        - comment_count\n        - body', () => {
             const newArticle = { 
-                author: 'jessjelly', 
+                author: 'lurker', 
                 title: 'Testing...testing',
                 body: 'Test article body.',
-                topic: 'coding'
+                topic: 'paper'
             }
             let articleNumberBefore = undefined;
             return request(app)
@@ -601,10 +601,10 @@ describe('/api/articles', () => {
                           const postedArticle = response.body.postedArticle;
                           expect(postedArticle).toMatchObject({ 
                               article_id: expect.any(Number),
-                              author: 'jessjelly',
+                              author: 'lurker',
                               title: 'Testing...testing',
                               body: 'Test article body.',
-                              topic: 'coding',
+                              topic: 'paper',
                               votes: 0,
                               created_at: expect.any(String),
                               comment_count: 0
