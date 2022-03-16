@@ -54,7 +54,7 @@
       ]
     }
   },
-  "POST/api/articles" {
+  "POST/api/articles" : {
     "description": "Responds with an article object with the properties: author, title, body, created_at, comment_count, votes, topic, article_id.",
     "params" : { 
       "author": "lurker", 
