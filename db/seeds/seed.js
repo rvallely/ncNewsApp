@@ -1,9 +1,3 @@
-/* You will need to create your tables and write your seed function to insert the data into your database.
-
-In order to both create the tables and seed your data, you will need the connection to your database. You can find this in the provided `connection.js`.
- */
-
-//separate tables for topics, articles, users and comments. 
 const db = require('../connection');
 const format = require('pg-format');
 const { formatTopicData, formatUserData, formatArticleData, formatCommentData } = require('./seed-formatting');
