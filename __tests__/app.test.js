@@ -1132,7 +1132,7 @@ describe('/api/users/:username', () => {
             });
           });
         });
-        test.only('Responds with status 400 and an error message \'Bad Request: incorrect password.\'.', () => {
+        test('Responds with status 400 and an error message \'Bad Request: incorrect password.\'.', () => {
             const username = 'icellusedkars';
             const password = { password: 'incorrect' };
             return request(app)

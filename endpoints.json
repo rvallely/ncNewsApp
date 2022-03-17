@@ -210,8 +210,9 @@
     }
   },
   "GET /api/users/:username": {
-    "description": "Responds with status 200 and a single user object corresponding to username given, with the properties username, avatar_url, name and password.",
+    "description": "Responds with status 200 and a single user object corresponding to username given, with the properties username, avatar_url, name and password. This when the password given is the correct one for a registered user.",
     "queries": [],
+    "params" : { "password": "icellusedkars_pass" },
     "exampleResponse": { 
       "user": { 
         "username": "icellusedkars",
