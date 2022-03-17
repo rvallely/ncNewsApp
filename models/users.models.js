@@ -13,6 +13,7 @@ exports.selectSingleUser = (username) => {
         `SELECT * FROM users
         WHERE username = $1;`, [username])
     .then((result) => {
+        console.log('single user ', result.rows[0])
         const user = result.rows[0];
         return user;
     });

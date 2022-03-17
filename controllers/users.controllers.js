@@ -18,6 +18,7 @@ exports.getSingleUser = (req, res, next) => {
         return checkUserExists(username).then((userExists) => {
             if (userExists) {
                 return selectSingleUser(username).then((user) => {
+                    console.log(user);
                     res.status(200).send({ user: user });
                 })
             } else {
