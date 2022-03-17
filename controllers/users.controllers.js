@@ -17,7 +17,7 @@ exports.getSingleUser = (req, res, next) => {
     if (usernameValid === true) {
         return checkUserExists(username).then((userExists) => {
             if (userExists) {
-                return checkPasswordCorrect(password).then((passwordCorrect) => {
+                return checkPasswordCorrect(username, password).then((passwordCorrect) => {
                     if (passwordCorrect) {
                         return selectSingleUser(username, password).then((user) => {
                             res.status(200).send({ user: user });

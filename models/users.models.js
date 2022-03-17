@@ -13,7 +13,6 @@ exports.selectSingleUser = (username, password) => {
         `SELECT * FROM users
         WHERE username = $1 AND password = $2;`, [username, password])
     .then((result) => {
-        console.log(result.rows)
         if (result.rows.length > 0){
             return result.rows[0];
         }
