@@ -1114,7 +1114,7 @@ describe('/api/users', () => {
 
 describe('/api/users/:username', () => {
     describe('GET', () => {
-        test.only('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password.', () => {
+        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password.', () => {
         const username = 'icellusedkars';
         return request(app)
           .get(`/api/users/${username}`)
@@ -1130,6 +1130,16 @@ describe('/api/users/:username', () => {
             });
           });
         });
+        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password.', () => {
+            const username = 'icellusedkars';
+            return request(app)
+              .get(`/api/users/${username}`)
+              .expect(200)
+              .then((response) => {  
+                  const user = response.body.user;
+                  expect(user.hasOwnProperty('password')).toBe(true);
+                });
+              });
         test('Responds with status 404  and returns a \'Not Found: user not on database\' error message, if username is valid because it is a string, but doesn\'t yet exist.', () => {
             const username = 'non_existent_user';
             return request(app)
