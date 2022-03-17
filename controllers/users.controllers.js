@@ -13,11 +13,12 @@ exports.getUsers = (req, res, next) => {
 exports.getSingleUser = (req, res, next) => {
     const username = req.params.username;
     const usernameValid = checkUsernameValid(username);
-
+    const { password } = req.body;
+    console.log(password, '<< in controler');
     if (usernameValid === true) {
         return checkUserExists(username).then((userExists) => {
             if (userExists) {
-                return selectSingleUser(username).then((user) => {
+                return selectSingleUser(username, password).then((user) => {
                     res.status(200).send({ user: user });
                 })
             } else {

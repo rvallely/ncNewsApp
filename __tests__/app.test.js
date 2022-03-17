@@ -1114,10 +1114,12 @@ describe('/api/users', () => {
 
 describe('/api/users/:username', () => {
     describe('GET', () => {
-        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password.', () => {
+        test.only('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
         const username = 'icellusedkars';
+        const password = { password: 'icellusedkars_pass' };
         return request(app)
           .get(`/api/users/${username}`)
+          .send(password)
           .expect(200)
           .then((response) => {  
               const user = response.body.user;
