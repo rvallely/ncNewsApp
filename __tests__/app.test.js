@@ -1114,7 +1114,7 @@ describe('/api/users', () => {
 
 describe('/api/users/:username', () => {
     describe('GET', () => {
-        test.only('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
+        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
         const username = 'icellusedkars';
         const password = { password: 'icellusedkars_pass' };
         return request(app)
@@ -1132,14 +1132,15 @@ describe('/api/users/:username', () => {
             });
           });
         });
-        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password.', () => {
+        test.only('Responds with status 400 and an error message \'Bad Request: incorrect password.\'.', () => {
             const username = 'icellusedkars';
+            const password = { password: 'incorrect' };
             return request(app)
               .get(`/api/users/${username}`)
-              .expect(200)
+              .send(password)
+              .expect(400)
               .then((response) => {  
-                  const user = response.body.user;
-                  expect(user.hasOwnProperty('password')).toBe(true);
+                  expect(response.body.msg).toBe('Bad Request: incorrect password.');
                 });
               });
         test('Responds with status 404  and returns a \'Not Found: user not on database\' error message, if username is valid because it is a string, but doesn\'t yet exist.', () => {
