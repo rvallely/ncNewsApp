@@ -4,7 +4,7 @@ exports.formatTopicData = (topicData) => {
 }
 
 exports.formatUserData = (userData) => {
-    const formattedUsers = userData.map((user) => [user.username, user.avatar_url, user.name]);
+    const formattedUsers = userData.map((user) => [user.username, user.avatar_url, user.name, user.password]);
     return formattedUsers;
 }
 

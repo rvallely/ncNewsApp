@@ -7,7 +7,6 @@ In order to both create the tables and seed your data, you will need the connect
 const db = require('../connection');
 const format = require('pg-format');
 const { formatTopicData, formatUserData, formatArticleData, formatCommentData } = require('./seed-formatting');
-// double check what needs to be not null and length of allowed chars
 
 const seed = (data) => {
   const { articleData, commentData, topicData, userData } = data;
@@ -25,7 +24,8 @@ const seed = (data) => {
           `CREATE TABLE users (
             username VARCHAR(30) PRIMARY KEY NOT NULL,
             avatar_url VARCHAR(2048), 
-            name VARCHAR(50) NOT NULL
+            name VARCHAR(50) NOT NULL, 
+            password VARCHAR(50) NOT NULL
           );`
         )
       })
@@ -67,7 +67,7 @@ const seed = (data) => {
         const formattedUsers = formatUserData(userData);
         const sql = format(
           `INSERT INTO users
-          (username, avatar_url, name)
+          (username, avatar_url, name, password)
           VALUES %L;`, formattedUsers
         );
         return db.query(sql);

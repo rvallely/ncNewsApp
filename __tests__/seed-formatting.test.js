@@ -64,36 +64,40 @@ describe('formatUserData', () => {
         const expectedFormattedUsers = [];
         expect(formatUserData(userData)).toEqual(expectedFormattedUsers);
     });
-    test('Returns a two level deep nested array, with each inner array containing the values of a row in the users table. Values are the order [username, avatar_url, name].', () => {
+    test('Returns a two level deep nested array, with each inner array containing the values of a row in the users table. Values are the order [username, avatar_url, name, password].', () => {
         const userData = [
             {
               username: 'butter_bridge',
               name: 'jonny',
               avatar_url:
-                'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+                'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 
+              password: 'butter_bridge_pass'
             },
             {
               username: 'icellusedkars',
               name: 'sam',
-              avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4'
+              avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4', 
+              password: 'icellusedkars_pass'
             },
             {
               username: 'rogersop',
               name: 'paul',
-              avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4'
+              avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 
+              password: 'rogersop_pass'
             },
             {
               username: 'lurker',
               name: 'do_nothing',
               avatar_url:
-                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png'
+                'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 
+              password: 'lurker_pass'
             }
         ];
         const expectedFormattedUsers = [ 
-            ['butter_bridge', 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 'jonny'], 
-            ['icellusedkars', 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4', 'sam'], 
-            ['rogersop', 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 'paul'],
-            ['lurker', 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 'do_nothing']  ];
+            ['butter_bridge', 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 'jonny', 'butter_bridge_pass'], 
+            ['icellusedkars', 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4', 'sam', 'icellusedkars_pass'], 
+            ['rogersop', 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 'paul', 'rogersop_pass'],
+            ['lurker', 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 'do_nothing', 'lurker_pass']  ];
         expect(formatUserData(userData)).toEqual(expectedFormattedUsers);
     });
     test('The original user data is not mutated.', () => {

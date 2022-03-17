@@ -36,8 +36,8 @@ app.get('/api', (req, res, next) => {
 app.all('*', handle404s);
 
 app.use(handleCustomErrors);
+app.use(handle404s);
 app.use(handlePsqlErrors);
 app.use(handleServerErrors);
-app.use(handle404s);
 
 module.exports = app;

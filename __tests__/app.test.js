@@ -1078,7 +1078,6 @@ describe('/api/comments/:comment_id', () => {
         test('Responds with a status 404 and an error message \'Not Found: comment id does not exist\' when comment_id is valid because it is a number, but does not yet exist.', () => {
             const comment_id = 999;
             const voteChange = { inc_votes: 1 };
-
                 return request(app)
                   .patch(`/api/comments/${comment_id}`)
                   .expect(404)
@@ -1115,7 +1114,7 @@ describe('/api/users', () => {
 
 describe('/api/users/:username', () => {
     describe('GET', () => {
-        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name.', () => {
+        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password.', () => {
         const username = 'icellusedkars';
         return request(app)
           .get(`/api/users/${username}`)
@@ -1126,7 +1125,8 @@ describe('/api/users/:username', () => {
               expect(user).toMatchObject({ 
                 username: 'icellusedkars',
                 avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
-                name: 'sam'
+                name: 'sam', 
+                password: 'icellusedkars_pass'
             });
           });
         });
