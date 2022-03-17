@@ -35,7 +35,7 @@ module.exports = [
     password: 'weegembump_pass'
   },
   {
-    username: 'jessjelly',
+    username: 'ssjelly',
     name: 'Jess Jelly',
     avatar_url:
       'https://vignette.wikia.nocookie.net/mrmen/images/4/4f/MR_JELLY_4A.jpg/revision/latest?cb=20180104121141', 
