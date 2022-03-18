@@ -1113,13 +1113,12 @@ describe('/api/users', () => {
 });  
 
 describe('/api/users/:username', () => {
-    describe('GET', () => {
+    describe('POST', () => {
         test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
-        const username = 'icellusedkars';
-        const password = { password: 'icellusedkars_pass' };
+        const user = { username: 'icellusedkars', password: 'icellusedkars_pass' };
         return request(app)
-          .get(`/api/users/${username}`)
-          .send(password)
+          .post('/api/users/login')
+          .send(user)
           .expect(200)
           .then((response) => {  
               const user = response.body.user;
@@ -1133,20 +1132,20 @@ describe('/api/users/:username', () => {
           });
         });
         test('Responds with status 400 and an error message \'Bad Request: incorrect password.\'.', () => {
-            const username = 'icellusedkars';
-            const password = { password: 'incorrect' };
+            const user = { username: 'icellusedkars', password: 'incorrect' };
             return request(app)
-              .get(`/api/users/${username}`)
-              .send(password)
+              .post('/api/users/login')
+              .send(user)
               .expect(400)
               .then((response) => {  
                   expect(response.body.msg).toBe('Bad Request: incorrect password.');
                 });
               });
         test('Responds with status 404  and returns a \'Not Found: user not on database\' error message, if username is valid because it is a string, but doesn\'t yet exist.', () => {
-            const username = 'non_existent_user';
+            const user = { username: 'non_existent_user', password: 'password'};
             return request(app)
-              .get(`/api/users/${username}`)
+              .post('/api/users/login')
+              .send(user)
               .expect(404)
               .then((response) => {
                 expect(response.body.msg).toBe('Not Found: user not on database');
@@ -1154,9 +1153,10 @@ describe('/api/users/:username', () => {
             });
         });
         test('Responds with status 400  and returns a \'Bad Request: maximum characters exceeded\' error message, if username is invalid because it has more than 30 characters.', () => {
-            const username = 'non_existent_user_with_too_many_characters';
+            const user = { username: 'non_existent_user_with_too_many_characters', password: 'password'};
             return request(app)
-              .get(`/api/users/${username}`)
+              .post('/api/users/login')
+              .send(user)
               .expect(400)
               .then((response) => {
                 expect(response.body.msg).toBe('Bad Request: Username cannot exceed 30 characters.');

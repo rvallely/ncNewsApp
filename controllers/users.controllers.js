@@ -11,9 +11,8 @@ exports.getUsers = (req, res, next) => {
 }
 
 exports.getSingleUser = (req, res, next) => {
-    const username = req.params.username;
+    const { username, password } = req.body;
     const usernameValid = checkUsernameValid(username);
-    const { password } = req.body;
     if (usernameValid === true) {
         return checkUserExists(username).then((userExists) => {
             if (userExists) {

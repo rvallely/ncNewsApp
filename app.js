@@ -27,7 +27,7 @@ app.patch('/api/comments/:comment_id', patchComment);
 app.post('/api/articles/', postArticle);
 
 app.get('/api/users', getUsers);
-app.get('/api/users/:username', getSingleUser);
+app.post('/api/users/login', getSingleUser);
 
 app.get('/api', (req, res, next) => {
     res.send(endpoints);
