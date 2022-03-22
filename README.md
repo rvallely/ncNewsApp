@@ -2,13 +2,9 @@
 
 ## Introduction
 
-NC News is a news and social platform, with the aim of creating a hub for users to post short news articles and viewpoints about the things that matter to and interest them. The app is smaller in scale than national news sites and is more focussed on connecting users, than focussed necessarily on the content they may be connecting over. I see it as more analogous to a friendly Discord server, where the users help craft their own experience by interacting with the site. NC News has more detail than tweets on Twitter, but is more personal than BBC News.
+This repository is the backend of my NC News project. More detail the NC News project can be found in the README.md of the frontend repository here https://github.com/rvallely/nc-news. It creates, structures and seeds the database, builds endpoints, and has appropriate error handling and test suites. I wanted to bring together everything I had learned on the backend section of the Northcoders bootcamp and begin to implement/develop my skills. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
 
-I chose to build a news and social app, because I am interested in the news and how we communicate information. I have consumed a selection of news and social media in various forms over the last few years, so I had some prior knowledge/experience in the area.
-
-This repository is the backend of my NC News project. It creates, structures and seeds the database, builds endpoints, and has appropriate error handling and test suites. I wanted to bring together everything I had learned on the backend section of the Northcoders bootcamp and begin to implement/develop my skills. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
-
-The hosted version of the project is here https://rosie-nc-news-app.herokuapp.com/api . 
+The hosted version of this backend project is here https://rosie-nc-news-app.herokuapp.com/api . 
 
 Using the endpoints and the queries and params listed for each endpoint, you can change the URL and access data on the database. You will need to download an extension such as 'JSON formatter' `https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa` to parse the data and make it more readable.
 
