@@ -1,3 +1,4 @@
+const res = require('express/lib/response');
 const db = require('../db/connection.js');
 
 exports.selectUsers = () => {
@@ -15,6 +16,9 @@ exports.selectSingleUser = (username, password) => {
     .then((result) => {
         if (result.rows.length > 0){
             return result.rows[0];
+        } 
+        else {
+           res.send({ status: 400 , msg: 'Bad Request: incorrect password.'})
         }
     });
 }

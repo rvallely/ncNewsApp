@@ -1,387 +1,63 @@
 # NC News
 
-## Background
+## Introduction
 
-NC News is a news and social conection web application. Its content is seperated into topics and users are able to vote and comment on articles. This the repo for the backend API for NC News. It was built uing PSQL and JavaScript. Each endpoint has been tested and includes appropriate error handling.
+NC News is a web application with the aim of creating a small scale and engaging news site. Users connect through posting short articles about things that interest them, and other users can comment on and like these articles. 
 
-The hosted version is here https://rosie-nc-news-app.herokuapp.com/api
+The aim of NC News is to create a hub for users to post short news articles and viewpoints about the things that matter to and interest them. The app is smaller in scale than usual news sites and is more focussed on connecting and empowering users, rather than necessarily the content they may be connecting over. I see it as more analogous to a friendly discord server, where the users help craft their own site/experience. More detail than a tweets on Twitter, but more personal than BBC News.
 
+I chose to build a news and social app, because I am interested in the news and how we communicate information. I have consumed a lot of news and social media in various forms over the last few years, so I had a bit of prior experience in the area.
+
+This repo is the backend of my NC News project. It created, structured and seeded the original database, builds endpoints, and has appropriate error handling and tests. I wanted to consolidate/bring together what I had learned on the backend section of the Northcoders bootcamp and test my skills. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
+
+The hosted version of the project is here https://rosie-nc-news-app.herokuapp.com/api . 
+
+Using the endpoints listed you can change the url and access data on the database. You will need to download an extension to parse the data and make it more inviting to read.
+
+## What I learned
+
+I learned that planning ahead and thinking through how data would be structured and how the data sets would relate to each other was vital. Later on in the project I came back to add a password to each user and had to restructure the users table to do so. I also learned I really enjoy testing, because it helped bring together what I was building in a larger way in terms of how parts would work together. Testing and error handling helped form a framework of how the app would work under the hood, which was really helpful when I moved on to the frontend part of the project. In terms of testing it was also helpful because it kept me focussed on one endpoint at a time, and always building with the simplest test case. I didn't get too distracted this way and way more efficient. How much time is saved through test and proper error handling. 
+
+## Technology
+
+It was built uing PSQL and JavaScript. 
+Minimum Node.js is v16.14.0
+postgres (PostgreSQL) 14.2
+***** if use encryption need to include tech here
+
+## Setup
+
+### Forking and Cloning 
+
+1. Fork this repository.
+2. From the forked repository, press code and copy the HTTPS address to your clipboard. Then from your terminal or command line, run `git clone <link-to-copied-HTTPS-address-of-forked-repo-here>`. This will clone the project so it can be run locally.
+3. From the command line of the project run `npm install` to install necessary dependencies.
+
+### Seeding the database
 
 Write your README, including the following information:
- Link to hosted version
- Write a summary of what the project is
+ Link to hosted version -- DONE
+ Write a summary of what the project is -- DONE
  Provide clear instructions of how to clone, install dependencies, seed local database, and run tests
  Include information about how to create the two .env files
  Specify minimum versions of Node.js and Postgres needed to run the project
 Remember that this README is targetted at people who will come to your repo (potentially from your CV or portfolio website) and want to see what you have created, and try it out for themselves(not just to look at your code!). So it is really important to include a link to the hosted version, as well as implement the above GET /api endpoint so that it is clear what your api does.
 
+## .env files
 
+You will need to create _two_ `.env` files for the project: 
+`.env.test` and  
+`.env.development`.  
 
+Into each, add `PGDATABASE=<database_name_here>`, with the correct database name for that environment (see `/db/setup.sql` for the database names) and see `.env-example` for an example. 
 
-## Step 1 - Setting up your project
+Double check that these `.env` files are .gitignored.
 
-You will need to create _two_ `.env` files for your project: 
-`.env.test` and  -- DONE
-`.env.development`.  - DONE
+## Scripts, Seeding and Running Tests
 
-Into each, add `PGDATABASE=<database_name_here>`, with the correct database name for that environment (see `/db/setup.sql` for the database names).  -- DONE
+In the `db` folder there is some data, a [setup.sql](./db/setup.sql) file and a `seeds` folder. This will all be used to run the project locally.
 
-Double check that these `.env` files are .gitignored.  - DONE
+In the scripts section of the `package.json file`, there are some npm scripts available.
 
-You have also been provided with a `db` folder with some data, a [setup.sql](./db/setup.sql) file and a `seeds` folder. You should also take a minute to familiarise yourself with the npm scripts you have been provided.
--- DONE --> so npm run seed would seed the devData data/development-data 
+For example, from the command line `npm run seed` would seed the devData in `data/development-data` and `npm test` would run the tests in `__tests__` folder using Jest.
 
-The job of `index.js` in each the data folders is to export out all the data from that folder, currently stored in separate files. This is so that, when you need access to the data elsewhere, you can write one convenient require statement - to the index file, rather than having to require each file individually. Think of it like a index of a book - a place to refer to! Make sure the index file exports an object with values of the data from that folder with the keys:
-
-- `topicData`
-- `articleData`
-- `userData`
-- `commentData`
-
-## Step 2 - Creating tables and Seeding
-
-You will need to create your tables and write your seed function to insert the data into your database.
-
-In order to both create the tables and seed your data, you will need the connection to your database. You can find this in the provided `connection.js`.
-
-### Creating Tables
-
-You should have separate tables for `topics`, `articles`, `users` and `comments`. Make sure to consider the order in which you create your tables. You should think about whether you require any constraints on your table columns (e.g. 'NOT NULL')
-
-Each topic should have:
-
-- `slug` field which is a unique string that acts as the table's primary key
-- `description` field which is a string giving a brief description of a given topic
-
-Each user should have:
-
-- `username` which is the primary key & unique
-- `avatar_url`
-- `name`
-
-Each article should have:
-
-- `article_id` which is the primary key
-- `title`
-- `body`
-- `votes` defaults to 0
-- `topic` field which references the slug in the topics table
-- `author` field that references a user's primary key (username)
-- `created_at` defaults to the current timestamp
-
-Each comment should have:
-
-- `comment_id` which is the primary key
-- `author` field that references a user's primary key (username)
-- `article_id` field that references an article's primary key
-- `votes` defaults to 0
-- `created_at` defaults to the current timestamp
-- `body`
-
-### Seeding
-
-You need to complete the provided seed function to insert the appropriate data into your database.
-
----
-
-## Step 3 - Building Endpoints
-
-- Use proper project configuration from the offset, being sure to treat development and test environments differently.
-- Test each route **as you go**, checking both successful requests **and the variety of errors you could expect to encounter** [See the error-handling file here for ideas of errors that will need to be considered](error-handling.md).
-- After taking the happy path when testing a route, think about how a client could make it go wrong. Add a test for that situation, then error handling to deal with it gracefully.
-
----
-
-Work through building endpoints in the following order:
-
-_This is a summary of all the endpoints. More detail about each endpoint is further down this document._
-
-**Essential endpoints**
-
-```http
-GET /api/topics
-GET /api/articles/:article_id
-PATCH /api/articles/:article_id
-GET /api/articles
-GET /api/articles/:article_id/comments
-POST /api/articles/:article_id/comments
-DELETE /api/comments/:comment_id
-GET /api
-```
-
-> Hosting and README time!
-
-**Next endpoints to work through**
-
-```http
-GET /api/users
-GET /api/users/:username
-PATCH /api/comments/:comment_id
-```
-
----
-
-All of your endpoints should send the responses specified below in an **object**, with a **key name** of what it is that being sent. E.g.
-
-```json
-{
-  "topics": [
-    {
-      "description": "Code is love, code is life",
-      "slug": "coding"
-    },
-    {
-      "description": "FOOTIE!",
-      "slug": "football"
-    },
-    {
-      "description": "Hey good looking, what you got cooking?",
-      "slug": "cooking"
-    }
-  ]
-}
-```
-
----
-
-### Essential Routes
-
-#### **GET /api/topics**
-
-Responds with:
-
-- an array of topic objects, each of which should have the following properties:
-  - `slug`
-  - `description`
-
----
-
-#### **GET /api/articles/:article_id**
-
-Responds with:
-
-- an article object, which should have the following properties:
-
-  - `author` which is the `username` from the users table
-  - `title`
-  - `article_id`
-  - `body`
-  - `topic`
-  - `created_at`
-  - `votes`
-  - `comment_count` which is the total count of all the comments with this article_id - you should make use of queries to the database in order to achieve this
-
----
-
-#### **PATCH /api/articles/:article_id**
-
-Request body accepts:
-
-- an object in the form `{ inc_votes: newVote }`
-
-  - `newVote` will indicate how much the `votes` property in the database should be updated by
-
-  e.g.
-
-  `{ inc_votes : 1 }` would increment the current article's vote property by 1
-
-  `{ inc_votes : -100 }` would decrement the current article's vote property by 100
-
-Responds with:
-
-- the updated article
-
----
-
-#### **GET /api/articles**
-
-Responds with:
-
-- an `articles` array of article objects, each of which should have the following properties:
-  - `author` which is the `username` from the users table
-  - `title`
-  - `article_id`
-  - `topic`
-  - `created_at`
-  - `votes`
-  - `comment_count` which is the total count of all the comments with this article_id - you should make use of queries to the database in order to achieve this
-
-Should accept queries:
-
-- `sort_by`, which sorts the articles by any valid column (defaults to date)
-- `order`, which can be set to `asc` or `desc` for ascending or descending (defaults to descending)
-- `topic`, which filters the articles by the topic value specified in the query
-
----
-
-#### **GET /api/articles/:article_id/comments**
-
-Responds with:
-
-- an array of comments for the given `article_id` of which each comment should have the following properties:
-  - `comment_id`
-  - `votes`
-  - `created_at`
-  - `author` which is the `username` from the users table
-  - `body`
-
----
-
-#### **POST /api/articles/:article_id/comments**
-
-Request body accepts:
-
-- an object with the following properties:
-  - `username`
-  - `body`
-
-Responds with:
-
-- the posted comment
-
----
-
-#### **DELETE /api/comments/:comment_id**
-
-Should:
-
-- delete the given comment by `comment_id`
-
-Responds with:
-
-- status 204 and no content
-
----
-
-#### **GET /api**
-
-Responds with:
-
-- JSON describing all the available endpoints on your API, see the [endpoints.json](./endpoints.json) for an (incomplete) example that you could build on, or create your own from scratch!
-
----
-
-### **STOP POINT: Hosting and README!**
-
-- If you _have_ already hosted your app at this point, remember to push up to `heroku` your updated code
-- If you haven't already hosted your app, now is the time! Follow the instructions in [hosting.md](./hosting.md)
-- Write your README, including the following information:
-  - [ ] Link to hosted version
-  - [ ] Write a summary of what the project is
-  - [ ] Provide clear instructions of how to clone, install dependencies, seed local database, and run tests
-  - [ ] Include information about how to create the two `.env` files
-  - [ ] Specify minimum versions of `Node.js` and `Postgres` needed to run the project
-
-**Remember that this README is targetted at people who will come to your repo (potentially from your CV or portfolio website) and want to see what you have created, and try it out for themselves(not _just_ to look at your code!). So it is really important to include a link to the hosted version, as well as implement the above `GET /api` endpoint so that it is clear what your api does.**
-
----
-
-### Further Routes
-
-#### **GET /api/users**
-
-Responds with:
-
-- an array of objects, each object should have the following property:
-  - `username`
-
----
-
-#### **GET /api/users/:username**
-
-Responds with:
-
-- a user object which should have the following properties:
-  - `username`
-  - `avatar_url`
-  - `name`
-
----
-
-#### **PATCH /api/comments/:comment_id**
-
-Request body accepts:
-
-- an object in the form `{ inc_votes: newVote }`
-
-  - `newVote` will indicate how much the `votes` property in the database should be updated by
-
-  e.g.
-
-  `{ inc_votes : 1 }` would increment the current comment's vote property by 1
-
-  `{ inc_votes : -1 }` would decrement the current comment's vote property by 1
-
-Responds with:
-
-- the updated comment
-
----
-
-### _Even more_ endpoints/tasks
-
-#### Adding pagination to GET /api/articles - adding pagination
-
-> To make sure that an API can handle large amounts of data, it is often necessary to use **pagination**. Head over to [Google](https://www.google.co.uk/search?q=cute+puppies), and you will notice that the search results are broken down into pages. It would not be feasible to serve up _all_ the results of a search in one go. The same is true of websites / apps like Facebook or Twitter (except they hide this by making requests for the next page in the background, when we scroll to the bottom of the browser). We can implement this functionality on our `/api/articles` and `/api/comments` endpoints.
-
-- Should accepts the following queries:
-  - `limit`, which limits the number of responses (defaults to 10)
-  - `p`, stands for page which specifies the page at which to start (calculated using limit)
-- add a `total_count` property, displaying the total number of articles (**this should display the total number of articles with any filters applied, discounting the limit**)
-
----
-
-#### Adding pagination to GET /api/articles/:article_id/comments
-
-Should accept the following queries:
-
-- `limit`, which limits the number of responses (defaults to 10)
-- `p`, stands for page which specifies the page at which to start (calculated using limit)
-
----
-
-#### POST /api/articles
-
-Request body accepts:
-
-- an object with the following properties:
-
-  - `author` which is the `username` from the users table
-  - `title`
-  - `body`
-  - `topic`
-
-Responds with:
-
-- the newly added article, with all the above properties as well as:
-  - `article_id`
-  - `votes`
-  - `created_at`
-  - `comment_count`
-
-#### POST /api/topics
-
-Request body accepts:
-
-- an object in the form:
-
-```json
-{
-  "slug": "topic name here",
-  "description": "description here"
-}
-```
-
-Responds with:
-
-- a topic object containing the newly added topic
-
-#### DELETE /api/articles/:article_id
-
-Should:
-
-- delete the given article by article_id
-
-Respond with:
-
-- status 204 and no content
