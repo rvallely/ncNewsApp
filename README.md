@@ -23,7 +23,7 @@ Using the endpoints and the 'queries' and 'params' listed for each endpoint on t
 
 I found that planning ahead was really important. In particular, before beginning to build the database it was vital to think through how the data would be structured and how the data sets would relate to each other. For example, while working on the frontend of this project, I came back to this repository to add a password to each user and had to restructure the users table to do so. It would have been easier if I had thought about this and implemented it at an earlier stage.
 
-I have learned that I enjoy the process of testing, because it helps form a fuller picture of what I am building and a framework of how an application will work under the hood. This was really useful when I moved on to the frontend of this project. 
+I have learned that I enjoy the process of testing, because it helps form a fuller picture of what I am building and a framework of how an application will work under the hood. This was really useful when I moved on to the frontend of NC News. 
 
 Testing provided an effective structure, keeping me focussed on one endpoint at a time, and one test at a time, always building out from the simplest test cases first.
 
