@@ -14,8 +14,9 @@ I wanted to bring together everything I had learned on the backend section of th
 
 The hosted API of this backend project: https://rosie-nc-news-app.herokuapp.com/api. 
 
-Using the endpoints and the queries and params listed for each endpoint, you can change the URL and access data in the database.  
-You may want to download an extension for your browser such as 'JSON formatter': https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa to parse the data and make it more readable.
+Using the endpoints and the 'queries' and 'params' listed for each endpoint, you can change the URL and access data in the database.  
+  
+  You may want to download an extension for your browser such as 'JSON formatter': https://chrome.google.com/webstore/detail/json-formatter/bcjindcccaagfpapjjmafapmmgkkhgoa to parse the data and make it more readable.
 
 ## What I learned
 
