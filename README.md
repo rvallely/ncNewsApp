@@ -2,7 +2,9 @@
 
 ## Introduction
 
-This repository is the backend of my NC News project. More detail the NC News project can be found in the README.md of the frontend repository here https://github.com/rvallely/nc-news. It creates, structures and seeds the database, builds endpoints, and has appropriate error handling and test suites. I wanted to bring together everything I had learned on the backend section of the Northcoders bootcamp and begin to implement/develop my skills. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
+This repository is the backend of my NC News project. More detail the NC News project can be found in the README.md of the frontend repository here https://github.com/rvallely/nc-news. 
+
+It creates, structures and seeds the database, builds the endpoints, and has appropriate error handling and test suites. I wanted to bring together everything I had learned on the backend section of the Northcoders bootcamp and begin to implement/develop my skills. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
 
 The hosted version of this backend project is here https://rosie-nc-news-app.herokuapp.com/api . 
 
