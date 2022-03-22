@@ -3,7 +3,8 @@
 ## Introduction
 
 This repository is the backend of my NC News project.  
-More details on the project can be found in the README.md of the frontend repository: https://github.com/rvallely/nc-news. 
+  
+  More details on the project can be found in the README.md of the frontend repository: https://github.com/rvallely/nc-news. 
 
 This repository:  
 . creates, structures and seeds the database  
