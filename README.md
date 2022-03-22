@@ -34,7 +34,6 @@ The backend was written in PSQL and JavaScript.
   Minimum requirements:  
 . `Node.js v16.14.0`  
 . `postgres (PostgreSQL) 14.2`  
-***** if use encryption on passes need to include package here
 
 ## Setup
 
