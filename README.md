@@ -42,7 +42,7 @@ The backend was written in PSQL and JavaScript.
 1. Fork this repository.
 2. From the forked repository, click the blue Code button and copy the HTTPS address to your clipboard. 
 3. From your command line navigate to an appropriate location and run `git clone <copied-HTTPS-address-of-repo-here>`. This will clone the project to your machine so it can be run locally.
-3. Open the project on your machine and from the command line of run `npm install` to install dependencies.
+3. Open the project on your machine and from the command line run `npm install` to install dependencies.
 
 ### .env files
 
@@ -50,7 +50,7 @@ You will need to create _two_ `.env` files:
 . `.env.test`  
 . `.env.development`
 
-Into each, add `PGDATABASE=<database_name_here>`, with the correct database name for that environment (see `/db/setup.sql` for the database names) and see `.env-example` for an example. 
+Into each, add `PGDATABASE=<database_name_here>`, with the correct database name for that environment (see `/db/setup.sql` for the database names and `.env-example` for an example). 
 
 Double check that these `.env` files are .gitignored.
 
@@ -58,7 +58,7 @@ Double check that these `.env` files are .gitignored.
 
 In the `db` folder there is some data, a [setup.sql](./db/setup.sql) file and a `seeds` folder. This will all be used to run the project locally.
 
-In the scripts section of the `package.json file`, there are some npm scripts available. It would be useful to familiarise yourself with these.
+In the scripts section of the `package.json` file, there are some npm scripts available. It would be useful to familiarise yourself with these.
   
   For example, from the command line:  
   . `npm run seed` would seed the devData in `data/development-data`  
