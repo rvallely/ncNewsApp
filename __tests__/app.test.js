@@ -1128,7 +1128,7 @@ describe('/api/users', () => {
                   });
           });
         });
-        test.only('Responds with status 400 and an error message \'Bad Request: user already exists\' if username already exists on the database.', () => {
+        test('Responds with status 400 and an error message \'Bad Request: user already exists\' if username already exists on the database.', () => {
             const newUser = { name: 'howard', username: 'icellusedkars', avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg', password: 'example'};
             return request(app)
               .post('/api/users')

@@ -58,7 +58,7 @@ exports.postNewUser = (req, res, next) => {
             //     res.status(201).send({ postedUser });
             // })
         } 
-        else if (!userExist) {
+        else if (!userExists) {
              return insertNewUser(newUser).then((postedUser) => {
                 res.status(201).send({ postedUser });
             })
