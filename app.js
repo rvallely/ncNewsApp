@@ -28,7 +28,7 @@ app.post('/api/articles/', postArticle);
 
 app.get('/api/users', getUsers);
 app.post('/api/users/login', getSingleUser);
-app.post('/api/users/signup', postNewUser);
+app.post('/api/users', postNewUser);
 
 app.get('/api', (req, res, next) => {
     res.send(endpoints);

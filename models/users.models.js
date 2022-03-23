@@ -24,7 +24,6 @@ exports.selectSingleUser = (username, password) => {
 }
 
 exports.insertNewUser = (newUser) => {
-
     return db.query(
         `INSERT INTO users 
         (name, username, avatar_url, password)
