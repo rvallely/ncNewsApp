@@ -19,7 +19,7 @@ const seed = (data) => {
             username VARCHAR(30) PRIMARY KEY NOT NULL,
             avatar_url VARCHAR(2048), 
             name VARCHAR(50) NOT NULL, 
-            password VARCHAR(50) NOT NULL
+            password VARCHAR(150) NOT NULL
           );`
         )
       })

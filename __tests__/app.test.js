@@ -1124,7 +1124,7 @@ describe('/api/users', () => {
                       name: 'howard', 
                       username: 'howard123',
                       avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg',
-                      password: 'example'
+                      password: expect.any(String)
                   });
           });
         });
@@ -1142,10 +1142,10 @@ describe('/api/users', () => {
     
 });  
 
-describe('/api/users/:username', () => {
+describe('/api/users/login', () => {
     describe('POST', () => {
-        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
-        const user = { username: 'icellusedkars', password: 'icellusedkars_pass' };
+        test.only('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
+        const user = { username: 'howard123', password: 'example' };
         return request(app)
           .post('/api/users/login')
           .send(user)
@@ -1153,12 +1153,12 @@ describe('/api/users/:username', () => {
           .then((response) => {  
               const user = response.body.user;
               expect(typeof user).toBe('object');
-              expect(user).toEqual({ 
-                username: 'icellusedkars',
-                avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
-                name: 'sam', 
-                password: 'icellusedkars_pass'
-            });
+              expect(user).toEqual({
+                username: 'howard123',
+                avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg',
+                name: 'howard',
+                password: '$2b$10$njCNX0bVxPwM0K1vH1Kyi.2gjlhPyPC1ip23xnriGUANLw3IxO0.u'
+              });
           });
         });
         test('Responds with status 400 and an error message \'Bad Request: incorrect password.\'.', () => {

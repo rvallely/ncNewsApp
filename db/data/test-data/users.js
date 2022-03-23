@@ -24,5 +24,11 @@ module.exports = [
     avatar_url:
       'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 
     password: 'lurker_pass'
+  }, 
+  {
+    username: 'howard123',
+    avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg',
+    name: 'howard',
+    password: '$2b$10$njCNX0bVxPwM0K1vH1Kyi.2gjlhPyPC1ip23xnriGUANLw3IxO0.u'
   }
 ];
