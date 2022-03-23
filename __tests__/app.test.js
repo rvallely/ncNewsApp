@@ -1110,6 +1110,36 @@ describe('/api/users', () => {
           });
         });
     });
+    describe('POST', () => {
+        test('Responds with status 201 and a posted user object with the properties: name, username, password.', () => {
+            const newUser = { name: 'howard', username: 'howard123', avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg', password: 'example'};
+            return request(app)
+          .post('/api/users/signup')
+          .send(newUser)
+          .expect(201)
+          .then((response) => {  
+              const postedUser = response.body.postedUser;
+              expect(postedUser).toEqual(
+                  {
+                      name: 'howard', 
+                      username: 'howard123',
+                      avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg',
+                      password: 'example'
+                  });
+          });
+        });
+        test.only('Responds with status 400 and an error message \'Bad Request: user already exists\' if username already exists on the database.', () => {
+            const newUser = { name: 'howard', username: 'icellusedkars', avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg', password: 'example'};
+            return request(app)
+              .post('/api/users/signup')
+              .send(newUser)
+               .expect(400)
+               .then((response) => {  
+                expect(response.body.msg).toBe('Bad Request: user already exists')
+          });
+        });
+    });
+    
 });  
 
 describe('/api/users/:username', () => {

@@ -22,3 +22,19 @@ exports.selectSingleUser = (username, password) => {
         }
     });
 }
+
+exports.insertNewUser = (newUser) => {
+
+    return db.query(
+        `INSERT INTO users 
+        (name, username, avatar_url, password)
+        VALUES
+        ($1, $2, $3, $4)
+        RETURNING *;`, [newUser.name, newUser.username, newUser.avatar_url, newUser.password]
+    )
+    .then((result) => {
+        const postedUser = result.rows[0];
+        console.log(postedUser)
+        return postedUser;
+    })
+}
