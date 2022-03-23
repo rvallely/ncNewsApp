@@ -47,27 +47,18 @@ exports.getSingleUser = (req, res, next) => {
 
 exports.postNewUser = (req, res, next) => {
     const newUser = req.body;
-    console.log(newUser)
     return checkUserExists(newUser.username).then((userExists) => {
         if (userExists) {
             return Promise.reject({ status: 400, msg: 'Bad Request: user already exists' })
             .catch((err) => {
                 next(err);
             });
-            // return insertNewUser(newUser).then((postedUser) => {
-            //     res.status(201).send({ postedUser });
-            // })
         } 
         else if (!userExists) {
              return insertNewUser(newUser).then((postedUser) => {
                 res.status(201).send({ postedUser });
             })
-            // return Promise.reject({ status: 400, msg: 'Bad Request: user already exists' })
-            // .catch((err) => {
-            //     next(err);
-            // });
         }
-    // if username not in database
     });
 }
 
