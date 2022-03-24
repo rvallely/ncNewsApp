@@ -12,37 +12,35 @@ exports.getUsers = (req, res, next) => {
     });
 }
 
-exports.getSingleUser = (req, res, next) => {
+exports.getSingleUser = async (req, res, next) => {
     const { username, password } = req.body;
     const usernameValid = checkUsernameValid(username);
-    if (usernameValid === true) {
-        // return checkUserExists(username).then((userExists) => {
-        //     if (userExists) {
-        //         return checkPasswordCorrect(username, password).then((passwordCorrect) => {
-        //             if (passwordCorrect) {
-                        return selectSingleUser(username, password).then((user) => {
-                            res.status(200).send({ user: user });
-                        });
-                    // } else {
-                    //     return Promise.reject({ status: 400 , msg: 'Bad Request: incorrect password.'})
-                    //         .catch((err) => {
-                    //             next(err);
-                    //         });
-                    // }
-            //     });
-                
-            // } else {
-            //     return Promise.reject({ status: 404, msg: 'Not Found: user not on database' })
-            //     .catch((err) => {
-            //         next(err);
-            //     });
-            // }
-      // });
-    } 
-    else if (usernameValid === 'chars over 30') {
+    if (usernameValid === 'chars over 30') {
         return Promise.reject({ status: 400, msg: 'Bad Request: Username cannot exceed 30 characters.' })
         .catch((err) => {
             next(err);
+        });
+    } 
+    else if (usernameValid === true) {
+        return selectSingleUser(username, password).then((user) => {
+            if (user !== false) {
+                bcrypt.compare(password, user.password, (err, passCorrect) => {
+                    if (passCorrect) {
+                        res.status(200).send({ user });
+                    } else {
+                        return Promise.reject({ status: 400, msg: 'Bad Request: Incorrect password.' })
+                        .catch((err) => {
+                            next(err);
+                        });
+                    }
+
+                }) 
+            } else {
+                return Promise.reject({ status: 404, msg: 'Not Found: user not on database'})
+                .catch((err) => {
+                    next(err);
+                });
+            }
         });
     }
 }

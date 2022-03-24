@@ -1112,17 +1112,27 @@ describe('/api/users', () => {
     });
     describe('POST', () => {
         test('Responds with status 201 and a posted user object with the properties: name, username, password.', () => {
-            const newUser = { name: 'howard', username: 'howard123', avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg', password: 'example'};
+            const newUser = { name: 'test', username: 'test123', avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg', password: 'test123_pass'};
+            // const newUser = {
+            //     username: 'lur',
+            //     name: 'jonny',
+            //     avatar_url:
+            //       'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 
+            //     password: 'lurker_pass'
+            //   }
             return request(app)
           .post('/api/users')
           .send(newUser)
           .expect(201)
           .then((response) => {  
               const postedUser = response.body.postedUser;
+              console.log(postedUser);
+            //   expect(typeof postedUser).toBe('object');
               expect(postedUser).toEqual(
+
                   {
-                      name: 'howard', 
-                      username: 'howard123',
+                      name: 'test', 
+                      username: 'test123',
                       avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg',
                       password: expect.any(String)
                   });
@@ -1144,7 +1154,25 @@ describe('/api/users', () => {
 
 describe('/api/users/login', () => {
     describe('POST', () => {
-        test.only('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
+        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
+            const user = { username: 'rogersop', password: 'rogersop_pass' };
+            return request(app)
+              .post('/api/users/login')
+              .send(user)
+              .expect(200)
+              .then((response) => {  
+                  console.log(response.body)
+                  const user = response.body.user;
+                  expect(typeof user).toBe('object');
+                  expect(user).toEqual(  {
+                    username: 'rogersop',
+                    name: 'paul',
+                    avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 
+                    password: '$2b$10$UVhaH4zWckgojNqpTAtchOQf3u4jj5ijnE53V2WqpfMaXizcxTPTu'
+                  });
+              });
+            });
+        test('Responds with status 200 and a single user object with the properties: \n        - username\n        - avatar_url\n        - name\n        - password. This is when given a registered username and correct password. ', () => {
         const user = { username: 'howard123', password: 'example' };
         return request(app)
           .post('/api/users/login')
@@ -1168,7 +1196,7 @@ describe('/api/users/login', () => {
               .send(user)
               .expect(400)
               .then((response) => {  
-                  expect(response.body.msg).toBe('Bad Request: incorrect password.');
+                  expect(response.body.msg).toBe('Bad Request: Incorrect password.');
                 });
               });
         test('Responds with status 404  and returns a \'Not Found: user not on database\' error message, if username is valid because it is a string, but doesn\'t yet exist.', () => {

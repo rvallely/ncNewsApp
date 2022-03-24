@@ -4,26 +4,26 @@ module.exports = [
     name: 'jonny',
     avatar_url:
       'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 
-    password: 'butter_bridge_pass'
+    password: '$2b$10$fpMbgmEv54HJR9E.jo6Hh./8DIWUCXXj4nqzjJFwbxOZ1IZrvQbKS'
   },
   {
     username: 'icellusedkars',
     name: 'sam',
     avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4', 
-    password: 'icellusedkars_pass'
+    password: '$2b$10$MsR1t4e9VvGOCFD8yOb86uzqkJ.LgzHctkYQPh30TPvFX3PF2/Ff2'
   },
   {
     username: 'rogersop',
     name: 'paul',
     avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 
-    password: 'rogersop_pass'
+    password: '$2b$10$UVhaH4zWckgojNqpTAtchOQf3u4jj5ijnE53V2WqpfMaXizcxTPTu'
   },
   {
     username: 'lurker',
     name: 'do_nothing',
     avatar_url:
       'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 
-    password: 'lurker_pass'
+    password: '$2b$10$37Jd1l6.zPqI1qb21q0UKOgZpneJoVb8Tezg/zSXnohNS8xnwlfRK'
   }, 
   {
     username: 'howard123',
