@@ -27,6 +27,10 @@ I have learned that I enjoy the process of testing, because it helps form a full
 
 Testing provided an effective structure, keeping me focussed on one endpoint at a time, and one test at a time, always building out from the simplest test cases first.
 
+## Special Note
+
+I enjoyed using bcrypt to hash the passwords because security is an area I've always been interested in. Being able to successfully hash passwords in this project as an extra feature and understand more of how passwords are kept secure was really satisfying.
+
 ## Technology
 
 The backend was written in PSQL and JavaScript.  
