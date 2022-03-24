@@ -209,6 +209,19 @@
       ] 
     }
   },
+  "POST /api/users" : {
+    "description": "Responds with status 201 and a posted user object with the properties: name, username, password.",
+    "params": { "name": "Test User", "username": "testUser", "password": "testUser_pass", "avatar_url": "https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg"}, 
+    "queries": [],
+    "exampleResponse": { 
+      "postedUser": {
+         "name": "Test User", 
+          "username": "testUser", 
+          "password": "$2b$10$37Jd1l6.zPqI1qb21q0UKOgZpneJoVb8Tezg/zSXnohNS8xnwlfRK", 
+          "avatar_url": "https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg"
+        }
+    }
+  },
   "POST /api/users/login": {
     "description": "Responds with status 200 and a single user object corresponding to username given, with the properties username, avatar_url, name and password. This when the password given is the correct one for a registered user.",
     "queries": [],
@@ -218,7 +231,7 @@
         "username": "icellusedkars",
         "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4",
         "name": "sam", 
-        "password": "icellusedkars_pass"
+        "password": "$2b$10$37Jd1l6.zPqI1qb21q0UKOgZpneJoVb8Tezg/zSXnohNS8xnwlfRK"
       }
     }
   }
