@@ -1113,23 +1113,13 @@ describe('/api/users', () => {
     describe('POST', () => {
         test('Responds with status 201 and a posted user object with the properties: name, username, password.', () => {
             const newUser = { name: 'test', username: 'test123', avatar_url: 'https://www.rainforest-alliance.org/wp-content/uploads/2021/06/three-toed-sloth-teaser-1.jpg.optimal.jpg', password: 'test123_pass'};
-            // const newUser = {
-            //     username: 'lur',
-            //     name: 'jonny',
-            //     avatar_url:
-            //       'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 
-            //     password: 'lurker_pass'
-            //   }
             return request(app)
           .post('/api/users')
           .send(newUser)
           .expect(201)
           .then((response) => {  
               const postedUser = response.body.postedUser;
-              console.log(postedUser);
-            //   expect(typeof postedUser).toBe('object');
               expect(postedUser).toEqual(
-
                   {
                       name: 'test', 
                       username: 'test123',
@@ -1161,7 +1151,6 @@ describe('/api/users/login', () => {
               .send(user)
               .expect(200)
               .then((response) => {  
-                  console.log(response.body)
                   const user = response.body.user;
                   expect(typeof user).toBe('object');
                   expect(user).toEqual(  {
