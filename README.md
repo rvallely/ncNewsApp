@@ -33,7 +33,11 @@ I enjoyed using bcrypt to hash the passwords because security is an area I've al
 
 ## Technology
 
-The backend was written in PSQL and JavaScript.  
+. PSQL  
+. JavaScript  
+. bcrypt  
+. express  
+. jest
   
   Minimum requirements:  
 . `Node.js v16.14.0`  
