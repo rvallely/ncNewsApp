@@ -130,16 +130,3 @@ exports.checkReqValid = (article) => {
         return false;
     }
 }
-
-// exports.checkPasswordCorrect= (username, password) => {
-//     return db.query(
-//         `SELECT * FROM users
-//         WHERE username = $1 AND password = $2`, [username, password]
-//     ).then((result) => {
-//         if (result.rows.length > 0) {
-//             return true;
-//         } else {
-//             return false;
-//         }
-//     });
-// }
