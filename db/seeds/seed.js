@@ -32,7 +32,7 @@ const seed = (data) => {
             votes INTEGER DEFAULT 0,
             topic VARCHAR(50) REFERENCES topics(slug) NOT NULL,
             author VARCHAR(30) REFERENCES users(username) NOT NULL,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
           );`
         )
       })
