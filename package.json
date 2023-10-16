@@ -8,7 +8,7 @@
     "seed": "node ./db/seeds/run-seed.js",
     "start": "node listen.js",
     "test": "jest",
-    "seed:prod": "NODE_ENV=production DATABASE_URL=$(heroku config:get DATABASE_URL) npm run seed"
+    "seed:prod": "SET NODE_ENV=production && SET DATABASE_URL=postgres://hzyysdntcuiqdk:bf590bff897720d1243136c43b4e140fae66bb1d93e22e2c5c852dfe669cfdcf@ec2-3-234-204-26.compute-1.amazonaws.com:5432/dcebgpk04gn8j1 && npm run seed"
   },
   "repository": {
     "type": "git",

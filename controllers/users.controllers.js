@@ -57,6 +57,7 @@ exports.postNewUser = (req, res, next) => {
         else if (!userExists) {
             bcrypt.hash(newUser.password, saltRounds, (err, hash) => {
                 if (err) {
+                    console.error(err);
                     res.send({ err: err }); 
                 } else {
                     return insertNewUser(newUser, hash).then((postedUser) => {
