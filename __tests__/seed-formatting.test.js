@@ -68,36 +68,36 @@ describe('formatUserData', () => {
         const userData = [
             {
               username: 'butter_bridge',
-              name: 'jonny',
+              email: 'butter_bridge@gmail.com',
               avatar_url:
                 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 
               password: 'butter_bridge_pass'
             },
             {
               username: 'icellusedkars',
-              name: 'sam',
+              email: 'icellusedkars@gmail.com',
               avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4', 
               password: 'icellusedkars_pass'
             },
             {
               username: 'rogersop',
-              name: 'paul',
+              email: 'rogersop@gmail.com',
               avatar_url: 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 
               password: 'rogersop_pass'
             },
             {
               username: 'lurker',
-              name: 'do_nothing',
+              email: 'lurker@gmail.com',
               avatar_url:
                 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 
               password: 'lurker_pass'
             }
         ];
         const expectedFormattedUsers = [ 
-            ['butter_bridge', 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 'jonny', 'butter_bridge_pass'], 
-            ['icellusedkars', 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4', 'sam', 'icellusedkars_pass'], 
-            ['rogersop', 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 'paul', 'rogersop_pass'],
-            ['lurker', 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 'do_nothing', 'lurker_pass']  ];
+            ['butter_bridge', 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg', 'butter_bridge_pass'], 
+            ['icellusedkars', 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4', 'icellusedkars_pass'], 
+            ['rogersop', 'https://avatars2.githubusercontent.com/u/24394918?s=400&v=4', 'rogersop_pass'],
+            ['lurker', 'https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png', 'lurker_pass']  ];
         expect(formatUserData(userData)).toEqual(expectedFormattedUsers);
     });
     test('The original user data is not mutated.', () => {

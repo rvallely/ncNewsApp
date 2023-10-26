@@ -1,88 +1,107 @@
 const { patch } = require('../app.js');
 const db = require('../db/connection.js');
+const { buildArticlesOrCommentsQuery } = require('../utils/utils.js');
 
-exports.insertComment = (article_id, newComment) => {
-    const body = newComment.body
-    const author = newComment.username
-    return db.query(
-        `SELECT * FROM users
-        WHERE username = $1;`, [author]
-    ).then((result) => {
-        if (result.rows.length === 0) {
-            return db.query(
-                `INSERT INTO users 
-                (username)
-                VALUES
-                ($1);`, [author]
-            ) 
-            .then(() => {
-                return db.query(
-                    `INSERT INTO comments
-                    (author, article_id, body)
-                    VALUES 
-                    ($1, $2, $3)
-                    RETURNING *;`, [author, article_id, body]
-                ).then((result) => {
-                    const newComment = result.rows;
-                    return newComment[0];
-                });
-            });
-        } else {
-            return db.query(
-                `INSERT INTO comments
-                (author, article_id, body)
-                VALUES 
-                ($1, $2, $3)
-                RETURNING *;`, [author, article_id, body]
-            ).then((result) => {
-                const newComment = result.rows;
-                return newComment[0];
-            });
-        }  
-    });
+exports.selectComments = async (query) => {
+    const {
+        statement,
+        params,
+    } = buildArticlesOrCommentsQuery(
+        query,
+        {
+            type: 'comments',
+            subType: '',
+        }
+        );
+
+    const { rows: currentPageComments } = await db.query(
+        statement.currentPage,
+        params
+    )
+
+    const { rows: nextPageComments } = await db.query(
+        statement.nextPage,
+        params
+    )
+
+    return {
+        comments: currentPageComments,
+        lastPage: nextPageComments.length === 0,
+    }
 }
 
-exports.selectComments = () => {
-    return db.query(
-        `SELECT *
-        FROM comments;`
-    ).then((result) => {
-        const comments = result.rows;
-        return comments;
-    });
+exports.insertComment = async (articleId, { body, username }) => {
+    return [{ rows }] = await db.query(
+        `
+        INSERT INTO comments
+        (author, article_id, body)
+        VALUES 
+        ($1, $2, $3)
+        RETURNING *;
+        `,
+        [username, articleId, body],
+    );
 }
 
 
-exports.removeComment = (comment_id) => {
-    return db.query(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+exports.removeComment = async (id) => {
+    const result = await db.query(
         `DELETE from comments
-        WHERE comment_id = $1`, [comment_id]
-    ).then((result) => {
-        return result.rows;
-    });
+        WHERE id = $1`, [id]
+    );
+    return result.rows;
 }
 
-exports.selectComment = (comment_id) => {
-    return db.query(
+exports.selectComment = async (id) => {
+    const result = await db.query(
         `SELECT *
         FROM comments
-        WHERE comment_id = $1;`, [comment_id]
-    ).then((result) => {
-        const comment = result.rows[0];
-        return comment;
-    });
+        WHERE id = $1;`, [id]
+    );
+    const comment = result.rows[0];
+    return comment;
 }
 
-exports.updateComment = (comment_id, patchObj) => {
-    const voteChange = patchObj.inc_votes;
-    return db.query(
+exports.updateComment = async (id, { votes, body}) => {
+    let setStatement = ''
+    const params = [id];
+
+    if (body) {
+        setStatement += `SET body = $2`;
+        params.push(body);
+    }
+    if (votes) {
+        setStatement += `SET votes = $2`;
+        params.push(votes);
+    }
+
+    const result = await db.query(
         `UPDATE comments
-        SET votes = votes + $2
-        WHERE comment_id = $1
-        RETURNING *;`, [comment_id, voteChange])
-        .then((result) => {
-            const updatedComment = result.rows[0];
-            return updatedComment;
-        });
+        ${setStatement}
+        WHERE id = $1
+        RETURNING *;`, params);
+    return result.rows[0];
 }
 

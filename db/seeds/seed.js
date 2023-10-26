@@ -8,8 +8,8 @@ const seed = (data) => {
       .then(() => {
         return db.query(
           `CREATE TABLE topics (
-             slug VARCHAR(50) PRIMARY KEY NOT NULL,
-             description VARCHAR(150) NOT NULL
+             name VARCHAR(100) PRIMARY KEY NOT NULL,
+             description VARCHAR(250) NOT NULL
           );`
         )
       })
@@ -18,7 +18,7 @@ const seed = (data) => {
           `CREATE TABLE users (
             username VARCHAR(30) PRIMARY KEY NOT NULL,
             avatar_url VARCHAR(2048), 
-            name VARCHAR(50) NOT NULL, 
+            email VARCHAR(150) NOT NULL, 
             password VARCHAR(150) NOT NULL
           );`
         )
@@ -26,11 +26,11 @@ const seed = (data) => {
       .then(() => {
         return db.query(
           `CREATE TABLE articles (
-            article_id SERIAL PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             title VARCHAR(100) NOT NULL,
             body VARCHAR(10000) NOT NULL,
             votes INTEGER DEFAULT 0,
-            topic VARCHAR(50) REFERENCES topics(slug) NOT NULL,
+            topic VARCHAR(150) REFERENCES topics(name) NOT NULL,
             author VARCHAR(30) REFERENCES users(username) NOT NULL,
             created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
           );`
@@ -39,9 +39,9 @@ const seed = (data) => {
       .then(() => {
         return db.query(
           `CREATE TABLE comments (
-            comment_id SERIAL PRIMARY KEY,
+            id SERIAL PRIMARY KEY,
             author VARCHAR(30) REFERENCES users(username) NOT NULL,
-            article_id INTEGER REFERENCES articles(article_id) NOT NULL, 
+            article_id INTEGER REFERENCES articles(id) NOT NULL, 
             votes INTEGER DEFAULT 0,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             body VARCHAR(1000) NOT NULL
@@ -52,7 +52,7 @@ const seed = (data) => {
         const formattedTopics = formatTopicData(topicData);
         const sql = format(
           `INSERT INTO topics
-          (slug, description)       
+          (name, description)       
           VALUES %L;`, formattedTopics
         );
         return db.query(sql);
@@ -61,7 +61,7 @@ const seed = (data) => {
         const formattedUsers = formatUserData(userData);
         const sql = format(
           `INSERT INTO users
-          (username, avatar_url, name, password)
+          (username, avatar_url, email, password)
           VALUES %L;`, formattedUsers
         );
         return db.query(sql);

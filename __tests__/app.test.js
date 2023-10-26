@@ -41,7 +41,7 @@ describe('/api/topics', () => {
 
 describe('/api/comments', () => {
     describe('GET', () => {
-        test('Responds with status 200 and an array of all comments available. Each comment has properties:\n        - comment_id\n        - author\n        - article_id\n        - votes\n        - created_at\n        - body.', () => {
+        test('Responds with status 200 and an array of all comments available. Each comment has properties:\n        - id\n        - author\n        - article_id\n        - votes\n        - created_at\n        - body.', () => {
         return request(app)
           .get('/api/comments')
           .expect(200)
@@ -50,7 +50,7 @@ describe('/api/comments', () => {
               expect(comments.length).toBe(18);
               comments.forEach(function(comment) {
                   expect(comment).toMatchObject({
-                      comment_id: expect.any(Number), 
+                      id: expect.any(Number), 
                       author: expect.any(String), 
                       article_id: expect.any(Number), 
                       votes: expect.any(Number),
@@ -670,7 +670,7 @@ describe('/api/articles', () => {
 
 describe('/api/articles/:article_id/comments', () => {
     describe('GET', () => {
-        test('Responds with a status of 200 and an array of comment objects for the given article id, when article_id has at least one comment. Each object should have the properties:\n        - comment_id\n        - votes\n        - created_at\n        - author\n        - body.', () => {
+        test('Responds with a status of 200 and an array of comment objects for the given article id, when article_id has at least one comment. Each object should have the properties:\n        - id\n        - votes\n        - created_at\n        - author\n        - body.', () => {
             const article_id = 9;
             return request(app)
               .get(`/api/articles/${article_id}/comments`)
@@ -680,7 +680,7 @@ describe('/api/articles/:article_id/comments', () => {
                 expect(comments.length).toBeGreaterThan(0);
                 comments.forEach(function(comment) {
                     expect(comment).toMatchObject({
-                    comment_id: expect.any(Number),
+                    id: expect.any(Number),
                     votes: expect.any(Number),
                     created_at: (expect.any(String)),
                     author: expect.any(String),
@@ -747,7 +747,7 @@ describe('/api/articles/:article_id/comments', () => {
                       .then((response) => {
                           const postedComment = response.body.comment;
                           expect(postedComment).toMatchObject({ 
-                              comment_id: 19,
+                              id: 19,
                               author: 'butter_bridge',
                               article_id: article_id,
                               votes: 0,
@@ -833,7 +833,7 @@ describe('/api/articles/:article_id/comments', () => {
               .then((res) => {
                 const postedComment = res.body.comment;
                 expect(postedComment).toMatchObject({ 
-                    comment_id: 19,
+                    id: 19,
                     author: 'butter_bridge',
                     article_id: 10,
                     votes: 0,
@@ -874,17 +874,17 @@ describe('/api/articles/:article_id/comments', () => {
 });
 
 
-describe('/api/comments/:comment_id', () => {
+describe('/api/comments/:id', () => {
     describe('GET', () => {
-        test('Responds with status 200 and a comment object of given comment_id, when comment exists.', () => {
-            const comment_id = 7;
+        test('Responds with status 200 and a comment object of given id, when comment exists.', () => {
+            const id = 7;
             return request(app)
-              .get(`/api/comments/${comment_id}`)
+              .get(`/api/comments/${id}`)
               .expect(200)
               .then((res) => {
                   const comment = res.body.comment;
                   expect(comment).toMatchObject({
-                      comment_id: 7, 
+                      id: 7, 
                       author: 'icellusedkars',
                       article_id: 1, 
                       votes: 0, 
@@ -893,28 +893,28 @@ describe('/api/comments/:comment_id', () => {
                   });
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if comment_id is invalid because it is a number below 1.', () => {
-            const comment_id = -2;
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if id is invalid because it is a number below 1.', () => {
+            const id = -2;
             return request(app)
-              .get(`/api/comments/${comment_id}`)
+              .get(`/api/comments/${id}`)
               .expect(400)
               .then((res) => {
                   expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
-        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if comment_id is invalid because it is the wrong data type.', () => {
-            const comment_id = 'three';
+        test('Responds with a status of 400 and returns a \'Bad Request: invalid data.\' error message, if id is invalid because it is the wrong data type.', () => {
+            const id = 'three';
             return request(app)
-              .get(`/api/comments/${comment_id}`)
+              .get(`/api/comments/${id}`)
               .expect(400)
               .then((res) => {
                   expect(res.body.msg).toBe('Bad Request: invalid data.');
               });
         });
-        test('Responds with a status of 404 and returns a \'Not Found\' error message, if comment_id is valid because it is a number >= 1, but doesn\'t yet exist.', () => {
-            const comment_id = 600;
+        test('Responds with a status of 404 and returns a \'Not Found\' error message, if id is valid because it is a number >= 1, but doesn\'t yet exist.', () => {
+            const id = 600;
             return request(app)
-              .get(`/api/comments/${comment_id}`)
+              .get(`/api/comments/${id}`)
               .expect(404)
               .then((res) => {
                   expect(res.body.msg).toBe('Not Found');
@@ -922,13 +922,13 @@ describe('/api/comments/:comment_id', () => {
         });
     });
     describe('DELETE', () => {
-        test('Responds with status 204 and no content. Deletes comment by comment_id given, when comment exists.', () => {
-            const comment_id = 7;
+        test('Responds with status 204 and no content. Deletes comment by id given, when comment exists.', () => {
+            const id = 7;
             let commentNumberBefore = undefined;
             return request(app).get('/api/comments').then((res) => {
                 commentNumberBefore = res.body.comments.length;
                 return request(app)
-                  .delete(`/api/comments/${comment_id}`)
+                  .delete(`/api/comments/${id}`)
                   .expect(204)
                   .then((res) => {
                     expect(res.body).toEqual({});
@@ -942,28 +942,28 @@ describe('/api/comments/:comment_id', () => {
                   }); 
             });
         });
-        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the comment_id is invalid because it is a number < 1.', () => {
-            const comment_id = -17;
+        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the id is invalid because it is a number < 1.', () => {
+            const id = -17;
             return request(app)
-              .delete(`/api/comments/${comment_id}`)
+              .delete(`/api/comments/${id}`)
               .expect(400)
               .then((res) => {
                   expect(res.body.msg).toBe('Bad Request: invalid data.')
               });
         });
-        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the comment_id is invalid because it is the wrong data type.', () => {
-            const comment_id = { comment_id: 3 };
+        test('Responds with a status of 400 and \'Bad Request: invalid data.\' error message if the id is invalid because it is the wrong data type.', () => {
+            const id = { id: 3 };
             return request(app)
-              .delete(`/api/comments/${comment_id}`)
+              .delete(`/api/comments/${id}`)
               .expect(400)
               .then((res) => {
                   expect(res.body.msg).toBe('Bad Request: invalid data.')
               });
         });
-        test('Responds with a status of 404 and \'Not Found\' error message if the comment_id is valid because it is a number >= 1, but does not exist.', () => {
-            const comment_id = 20;
+        test('Responds with a status of 404 and \'Not Found\' error message if the id is valid because it is a number >= 1, but does not exist.', () => {
+            const id = 20;
             return request(app)
-              .delete(`/api/comments/${comment_id}`)
+              .delete(`/api/comments/${id}`)
               .expect(404)
               .then((res) => {
                   expect(res.body.msg).toBe('Not Found')
@@ -972,19 +972,19 @@ describe('/api/comments/:comment_id', () => {
     });
     describe('PATCH', () => {
         test('Responds with a status 200 and an updated comment object, when inc_votes value is positive.', () => {
-            const comment_id = 7;
+            const id = 7;
             const voteChange = { inc_votes: 1 };
-            return request(app).get(`/api/comments/${comment_id}`).then((res)=> {
+            return request(app).get(`/api/comments/${id}`).then((res)=> {
                 votesBefore = res.body.comment.votes;
         
                 return request(app)
-                  .patch(`/api/comments/${comment_id}`)
+                  .patch(`/api/comments/${id}`)
                   .expect(200)
                   .send(voteChange)
                   .then((response) => {
                       const updatedComment = response.body.updatedComment;
                       expect(updatedComment).toMatchObject({
-                        comment_id: 7, 
+                        id: 7, 
                         author: 'icellusedkars',
                         article_id: 1, 
                         votes: 1, 
@@ -998,20 +998,20 @@ describe('/api/comments/:comment_id', () => {
 
         })
         test('Responds with a status 200 and an updated comment object, when inc_votes value is negative.', () => {
-            const comment_id = 7;
+            const id = 7;
             const voteChange = { inc_votes: -1 };
 
-            return request(app).get(`/api/comments/${comment_id}`).then((res)=> {
+            return request(app).get(`/api/comments/${id}`).then((res)=> {
                 votesBefore = res.body.comment.votes;
 
                 return request(app)
-                  .patch(`/api/comments/${comment_id}`)
+                  .patch(`/api/comments/${id}`)
                   .expect(200)
                   .send(voteChange)
                   .then((response) => {
                       const updatedComment = response.body.updatedComment;
                       expect(updatedComment).toMatchObject({
-                        comment_id: 7, 
+                        id: 7, 
                         author: 'icellusedkars',
                         article_id: 1, 
                         votes: -1, 
@@ -1024,19 +1024,19 @@ describe('/api/comments/:comment_id', () => {
             });
         });
         test('Responds with a status 200 and an unchanged comment object, when inc_votes value is missing.', () => {
-            const comment_id = 7;
+            const id = 7;
             const voteChange = {mising_key: 1};
-            return request(app).get(`/api/comments/${comment_id}`).then((res)=> {
+            return request(app).get(`/api/comments/${id}`).then((res)=> {
                 votesBefore = res.body.comment.votes;
         
                 return request(app)
-                  .patch(`/api/comments/${comment_id}`)
+                  .patch(`/api/comments/${id}`)
                   .expect(200)
                   .send(voteChange)
                   .then((response) => {
                       const updatedComment = response.body.updatedComment;
                       expect(updatedComment).toMatchObject({
-                        comment_id: 7, 
+                        id: 7, 
                         author: 'icellusedkars',
                         article_id: 1, 
                         votes: 0, 
@@ -1050,11 +1050,11 @@ describe('/api/comments/:comment_id', () => {
 
         });
         test('Responds with a status 400 and an error message \'Bad Request: Invalid data type\' when inc_votes value is not a number.', () => {
-            const comment_id = 7;
+            const id = 7;
             const voteChange = { inc_votes: 'not_a_number' };
 
                 return request(app)
-                  .patch(`/api/comments/${comment_id}`)
+                  .patch(`/api/comments/${id}`)
                   .expect(400)
                   .send(voteChange)
                   .then((response) => {
@@ -1062,12 +1062,12 @@ describe('/api/comments/:comment_id', () => {
                       expect(msg).toBe('Bad Request: Invalid data type');
                   });
         });
-        test('Responds with a status 400 and an error message \'Bad Request: Invalid data type\' when comment_id is not a number.', () => {
-            const comment_id = 'seven';
+        test('Responds with a status 400 and an error message \'Bad Request: Invalid data type\' when id is not a number.', () => {
+            const id = 'seven';
             const voteChange = { inc_votes: 1 };
 
                 return request(app)
-                  .patch(`/api/comments/${comment_id}`)
+                  .patch(`/api/comments/${id}`)
                   .expect(400)
                   .send(voteChange)
                   .then((response) => {
@@ -1075,11 +1075,11 @@ describe('/api/comments/:comment_id', () => {
                       expect(msg).toBe('Bad Request: Invalid data type');
                   });
         });
-        test('Responds with a status 404 and an error message \'Not Found: comment id does not exist\' when comment_id is valid because it is a number, but does not yet exist.', () => {
-            const comment_id = 999;
+        test('Responds with a status 404 and an error message \'Not Found: comment id does not exist\' when id is valid because it is a number, but does not yet exist.', () => {
+            const id = 999;
             const voteChange = { inc_votes: 1 };
                 return request(app)
-                  .patch(`/api/comments/${comment_id}`)
+                  .patch(`/api/comments/${id}`)
                   .expect(404)
                   .send(voteChange)
                   .then((response) => {

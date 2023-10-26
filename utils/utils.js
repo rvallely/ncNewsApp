@@ -1,132 +1,137 @@
-const { type } = require('express/lib/response');
-const { rows } = require('pg/lib/defaults');
 const db = require('../db/connection.js');
 
-exports.checkArticleIdExists = (article_id) => {
-    if (article_id < 1) {
-        article_id = 'Invalid article_id';
+exports.checkColumnExists = (sortBy) => {
+    return ['author', 'title', 'topic', 'created_at', 'votes', 'comment_count'].includes(sortBy);
+}
+
+exports.checkUserExists = async (username) => {
+    const result = await db.query(
+        `
+        SELECT * FROM users
+        WHERE username = $1;
+        `,
+        [username],
+        );
+    return result.rows.length > 0;
+}
+
+exports.commentOrArticleUpdateBodyValid = (body) => {
+    return body.hasOwnProperty('body') || body.hasOwnProperty('votes');
+}
+
+exports.articleExists = async (id) => {
+    const result = await db.query(
+        `
+        SELECT * FROM articles
+        WHERE id = $1;
+        `,
+        [id],
+    );
+    return result.rows.length > 0;
+}
+
+exports.buildArticlesOrCommentsQuery = (query, { type, subType }) => {
+    const statements = {
+        comments: {
+            select: 'SELECT *\n',
+            from: 'FROM comments\n',
+        },
+        articles: {
+            select: `
+            SELECT
+                articles.author,
+                articles.title,
+                articles.body,
+                articles.id,
+                articles.topic,
+                articles.created_at,
+                articles.votes,
+                COUNT(comments.article_id) AS comment_count
+            `,
+            from: `
+            FROM articles
+            LEFT JOIN comments
+            ON comments.article_id = articles.id\n` ,
+            groupBy: `GROUP BY articles.id\n`,
+        },
     }
-    return db.query(
-        `SELECT * FROM articles
-        WHERE article_id = $1`, [article_id]
-    ).then((result) => {
-        if (result.rows.length > 0) {
-            return true;
-        } else {
-            return false;
+    const where = {
+        statement: '',
+        params: []
+    }
+
+    let order = '';
+
+    Object.entries(query).forEach(([key, value]) => {
+        const keyPrefix = type === 'articles' ? 'articles.' : ''
+        switch (key) {
+            case 'topic':
+                if (where.params.length === 0) {
+                    where.statement += ` WHERE ${keyPrefix}${key}=$1 `;
+                    where.params.push(value)
+                } else {
+                    where.statement += `AND ${keyPrefix}${key}=$${where.params.length + 1} `;
+                    where.params.push(value)
+                }
+                break;
+            case 'author':
+                if (where.params.length === 0) {
+                    where.statement += ` WHERE ${keyPrefix}${key} = $1 `;
+                    where.params.push(value)
+                } else {
+                    where.statement += ` AND ${keyPrefix}${key} = $${where.params.length + 1} `;
+                    where.params.push(value)
+                }
+                break;
+            case 'sortBy':
+                order += `ORDER BY ${query.sortBy} ${query.order} `
+                break;
+            case 'id':
+                if (where.params.length === 0) {
+                    where.statement += ` WHERE articles.${key} = $1 `;
+                    where.params.push(value)
+                } else {
+                    where.statement += ` AND articles.${key} = $${where.params.length + 1} `;
+                    where.params.push(value)
+                }
+                break;
+            case 'articleId':
+                if (where.params.length === 0) {
+                    where.statement += ` WHERE article_id = $1 `;
+                    where.params.push(value)
+                } else {
+                    where.statement += ` AND article_id = $${where.params.length + 1} `;
+                    where.params.push(value)
+                }
+                break;
         }
     });
-}
 
-exports.checkCommentKeys = (newComment) => {
-    if(newComment.hasOwnProperty('body') && newComment.hasOwnProperty('username')) {
-        return true;
-    } else {
-        return false;
+    if (order === '' && subType !== 'single article') {
+        order += 'ORDER BY created_at DESC'
     }
-}
 
-exports.checkCommentExists = (comment_id) => {
-    if (Number(comment_id) < 1) {
-        comment_id = 'Invalid comment id';
+    const basicStatement = {
+        articles: statements.articles.select  + statements.articles.from + where.statement + statements.articles.groupBy + order,
+        comments: statements.comments.select  + statements.comments.from + where.statement + order,
     }
-    return db.query(
-        `SELECT * FROM comments
-        WHERE comment_id = $1`, [comment_id]
-    ).then((result) => {
-  
-        if (result.rows.length > 0) {
-          
-            return true;
-        } else {
-       
-            return false;
-        }
-    });
+    return {
+        statement: {
+            currentPage: basicStatement[type] + (subType === 'single article' ? '': ` LIMIT 30 OFFSET ${Number(query.page) * 30}` + ';'),
+            nextPage: basicStatement[type] + (subType === 'single article' ? '': ` LIMIT 30 OFFSET ${(Number(query.page) + 1) * 30}` + ';'),
+        },
+        params: where.params,
+    };
 }
 
-exports.checkPatchKeys = (patchObj) => {
-    if (patchObj.hasOwnProperty('inc_votes') && typeof patchObj.inc_votes === 'number') {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-exports.checkColumnExists = (query) => {
-    if (query.sort_by === undefined ||
-        query.sort_by === 'author' ||
-        query.sort_by === 'title' ||
-        query.sort_by === 'article_id' ||
-        query.sort_by === 'topic' ||
-        query.sort_by === 'created_at' ||
-        query.sort_by === 'votes' ||
-        query.sort_by === 'comment_count') {
-            return true;
-    } else {
-        return false;
-    }
-}
-
-exports.checkTopicExists = (topic) => {
-    return db.query(
-        `SELECT * FROM topics
-        WHERE slug = $1`, [topic]
-    ).then((result) => {
-        if (topic === undefined) {
-            return true;
-        }
-        if (result.rows.length === 0) {
-            return 'invalid topic';
-        } else if (result.rows.length > 0) {
-            return true;
-        }
-    });
-}
-
-exports.checkUserExists = (username) => {
-    return db.query(
-        `SELECT * FROM users
-        WHERE username = $1`, [username]
-    ).then((result) => {
-        if (result.rows.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    });
-}
-
-exports.checkUsernameValid = (username) => {
-    if (username.length > 30) {
-        return 'chars over 30';
-    }
-    else if (username.length <= 30){
-        return true;
-    }   
-}
-
-exports.checkValuesValid = (patchObj, comment_id) => {
-    result = true;
-    if (typeof patchObj.inc_votes === 'number' &&  /[\d]+/.test(comment_id)) {
-        result = true;
-    } else {
-        result = false;
-    }
-    return result;
-}
-
-exports.checkReqValid = (article) => {
-    if (article.hasOwnProperty('author') &&
-        article.hasOwnProperty('title') &&
-        article.hasOwnProperty('body') &&
-        article.hasOwnProperty('topic') &&
-        article.author.length > 0 &&
-        article.body.length > 0 &&
-        article.title.length > 0 ) 
-    {
-            return true;
-    } else {
-        return false;
-    }
+exports.commentExists = async (id) => {
+    const result = await db.query(
+        `
+        SELECT *
+        FROM comments
+        WHERE id = $1;
+        `,
+        [id]
+        );
+    return result.rows.length > 0;
 }
