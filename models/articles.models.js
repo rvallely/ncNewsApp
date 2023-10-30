@@ -35,7 +35,7 @@ exports.selectArticles = async (query) => {
 }
 
 exports.insertArticle = async ({ author, title, body, topic}) => {
-    return [{ rows }] = await db.query(
+    const { rows: [article] } = await db.query(
         `
         INSERT INTO articles
         (author, title, body, topic)
@@ -45,6 +45,7 @@ exports.insertArticle = async ({ author, title, body, topic}) => {
         `,
         [author, title, body, topic],
     );
+    return article;
 }
 
 exports.updateArticle = async (id, { votes, body}) => {
@@ -59,13 +60,14 @@ exports.updateArticle = async (id, { votes, body}) => {
         setStatement += `SET votes = $2`;
         params.push(votes);
     }
-    return [{ rows }] = await db.query(
+    const { rows: [article] } = await db.query(
         `UPDATE articles
         ${setStatement}
         WHERE id = $1
         RETURNING *;`,
         params,
         );
+    return article;
 }
 
 

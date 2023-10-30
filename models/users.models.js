@@ -1,17 +1,18 @@
 const db = require('../db/connection.js');
 
 exports.selectSingleUser = async (username) => {
-    return [{ rows }] = await db.query(
+    const { rows: [user] } = await db.query(
         `
         SELECT * FROM users
         WHERE username = $1;
         `,
         [username]
     );
+    return user;
 }
 
 exports.insertUser = async ({ email, username, avatarIcon }, hash) => {
-    return [{ rows }] = await db.query(
+    const { rows: [user] } = await db.query(
         `
         INSERT INTO users 
         (email, username, avatar_url, password)
@@ -21,4 +22,5 @@ exports.insertUser = async ({ email, username, avatarIcon }, hash) => {
         `,
         [email, username, avatarIcon, hash],
     );
+    return user;
 }
