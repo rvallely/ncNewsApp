@@ -1,4 +1,5 @@
-const { updateArticle, selectArticles, insertArticle } = require('../models/articles.models.js');
+const { updateArticle, selectArticles, insertArticle, deleteArticle } = require('../models/articles.models.js');
+const { deleteComments } = require('../models/comments.models.js');
 const { articleExists, checkColumnExists, checkUserExists, commentOrArticleUpdateBodyValid } = require('../utils/utils.js');
 
 exports.getArticles = async (req, res, next) => {
@@ -39,42 +40,22 @@ exports.postArticle = async (req, res, next) => {
     } 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 exports.deleteArticle = async (req, res, next) => {
-    const article_id = req.params.articleId;
-    if (articleExists(article_id)) {
-
+    if (articleExists(req.params.id)) {
+        const { success: deleteCommentsSuccess } = await deleteComments({ articleId: req.params.id })
+        if (deleteCommentsSuccess) {
+            const { success: deleteArticlesSuccess } = await deleteArticle(req.params.id);
+            if (deleteArticlesSuccess) {
+                res.status(200).send('Successfully deleted article and comments.');
+            } else {
+                next({ status: 500, msg: 'Failed to delete article.' });
+            }
+        } else {
+            next({ status: 500, msg: 'Failed to delete comments.' });
+        }
+    } else {
+        next({ status: 404, msg: 'Not Found: this article does not exist.' });
     }
-    
-    // .then((articleExists) => {
-    //     if(articleExists) {
-    //         removeArticle(article_id, deletedValues).then((blankArticle) => {
-    //             res.status(200).send(blankArticle);
-    //         })
-    //     } else {
-    //         return Promise.reject({ status: 404, msg: 'Not Found: this article does not exist.' });
-    //     }
-    // })    
-    // .catch((err) => {
-    //     next(err);
-    // });
 }
 
 

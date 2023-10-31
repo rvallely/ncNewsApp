@@ -1,4 +1,4 @@
-const { insertComment, selectComments, removeComment, selectComment, updateComment } = require('../models/comments.models.js');
+const { insertComment, selectComments, deleteComments, updateComment } = require('../models/comments.models.js');
 const { articleExists, commentExists, checkUserExists, commentOrArticleUpdateBodyValid } = require('../utils/utils.js');
 
 exports.getCommentsByArticleId = async (req, res, next) => {
@@ -64,53 +64,19 @@ exports.postComment = async (req, res, next) => {
     } 
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-exports.deleteComment = (req, res, next) => {
+exports.deleteComment = async (req, res, next) => {
     const id = req.params.id;
-    return commentExists(id).then((commentExists) => {
-        if(commentExists) {
-            removeComment(id).then((comment) => {
-                res.status(204).send(comment);
-            })
-        } else {
-            return Promise.reject({ status: 404, msg: 'Not Found' });
+    const commentInDb = await commentExists(id);
+    
+    if(commentInDb) {
+        try {
+            await deleteComments({id});
+            res.status(200).send('Successfully deleted comment');
+        } catch (err) {
+            console.log('ERROR: ', JSON.stringify(err));
+            next({ status: 500, msg: 'Something went wrong, please try again.' });
         }
-    })    
-    .catch((err) => {
-        next(err);
-    });
+    } else {
+        next({ status: 404, msg: 'Not Found' });
+    }
 }
-
-exports.getComment = (req, res, next) => {
-    const id = req.params.id;
-    return commentExists(id).then((commentExists) => {
-        if(commentExists) {
-            selectComment(id).then((comment) => {
-                res.status(200).send({ comment: comment });
-            });
-        } else {
-            return Promise.reject({ status: 404, msg: 'Not Found' });
-        }
-    })            
-    .catch((err) => {
-        next(err);
-    });
-}
-

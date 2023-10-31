@@ -16,7 +16,7 @@ exports.checkUserExists = async (username) => {
 }
 
 exports.commentOrArticleUpdateBodyValid = (body) => {
-    return body.hasOwnProperty('body') || body.hasOwnProperty('votes');
+    return body.hasOwnProperty('body') || body.hasOwnProperty('votes') || body.hasOwnProperty('title') || body.hasOwnProperty('topic');
 }
 
 exports.articleExists = async (id) => {

@@ -44,47 +44,6 @@ exports.insertComment = async (articleId, { body, username }) => {
     return comment;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-exports.removeComment = async (id) => {
-    const result = await db.query(
-        `DELETE from comments
-        WHERE id = $1`, [id]
-    );
-    return result.rows;
-}
-
-exports.selectComment = async (id) => {
-    const result = await db.query(
-        `SELECT *
-        FROM comments
-        WHERE id = $1;`, [id]
-    );
-    const comment = result.rows[0];
-    return comment;
-}
-
 exports.updateComment = async (id, { votes, body}) => {
     let setStatement = ''
     const params = [id];
@@ -106,3 +65,29 @@ exports.updateComment = async (id, { votes, body}) => {
     return result.rows[0];
 }
 
+exports.deleteComments = async ({ id, articleId }) => {
+    const where = {
+        statement: 'WHERE ',
+        params: [],
+    }
+    if (id) {
+        where.statement += ' id=$1;';
+        where.params.push(id);
+    }
+    if (articleId) {
+        where.statement += ' article_id=$1;';
+        where.params.push(articleId);
+    }
+    try {
+        await db.query(
+            `
+            DELETE from comments
+            ${where.statement}
+            `,
+            where.params,
+        );
+        return { success: true };
+    } catch (err) {
+        return { success: false };
+    }
+}
