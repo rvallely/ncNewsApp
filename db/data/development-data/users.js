@@ -35,10 +35,10 @@ module.exports = [
     password: '$2b$10$vtj1fIsRE/ZOvy/I8AOj4evGU.Bn2zLCoN1XCXhwGJGPisnEcAt/q'
   },
   {
-    username: '',
-    email: '',
+    username: 'LunaDreamer',
+    email: 'LunaDreamer@email.com',
     avatar_url:
       'src/assets/avatar_icons/bearded_man.png', 
-    password: '$2b$10$UE2wG8RXQlEhckwrn7yKXueXpbGxoyK1kJFG6/yC4P.08rgS.oop6'
-  }
+    password: '$2b$10$vtj1fIsRE/ZOvy/I8AOj4evGU.Bn2zLCoX1XCXhwGJGPisnEcAt/q'
+  },
 ];
