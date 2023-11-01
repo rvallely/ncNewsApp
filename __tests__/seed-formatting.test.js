@@ -1,5 +1,7 @@
 const { formatTopicData, formatUserData, formatArticleData, formatCommentData } = require('../db/seeds/seed-formatting');
 
+//TODO remove/update test file
+
 describe('formatTopicData', () => {
     test('Returns an empty array when passed an empty array of data.', () => {
         const topicData = [];

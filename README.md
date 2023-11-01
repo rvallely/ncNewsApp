@@ -1,19 +1,19 @@
-# NC News
+# The Pulse
 
 ## Introduction
 
-This repository is the backend of my NC News project.  
+This repository is the backend of The Pulse news app.  
   
-  More details on the project can be found in the README.md of the frontend repository: https://github.com/rvallely/nc-news. 
+  More details on the project can be found in the README.md of the frontend repository: https://github.com/rvallely/the-pulse. 
 
 This repository:  
 . creates, structures and seeds the database  
 . builds the endpoints  
 . has appropriate error handling and test suites
 
-I wanted to bring together everything I had learned on the back-end section of the Northcoders bootcamp and develop my skills further. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
+I wanted to bring together everything I had learned on the backend section of the Northcoders bootcamp and develop my skills further. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
 
-The hosted API of this back-end project: https://rosie-nc-news-app.herokuapp.com/api. 
+The hosted API of this back-end project: TODO: updatehttps://rosie-nc-news-app.herokuapp.com/api. 
 
 Using the endpoints and the 'queries' and 'params' listed for each endpoint on the hosted API, you can change the URL and access data in the database.  
   
@@ -23,7 +23,7 @@ Using the endpoints and the 'queries' and 'params' listed for each endpoint on t
 
 I found that planning ahead was really important. In particular, before beginning to build the database it was vital to think through how the data would be structured and how the data sets would relate to each other. For example, while working on the frontend of this project, I came back to this repository to add a password to each user and had to restructure the users table to do so. It would have been easier if I had thought about this and implemented it at an earlier stage.
 
-I have learned that I enjoy the process of testing, because it helps form a fuller picture of what I am building and a framework of how an application will work under the hood. This was really useful when I moved on to the frontend of NC News. 
+I have learned that I enjoy the process of testing, because it helps form a fuller picture of what I am building and a framework of how an application will work under the hood. This was really useful when I moved on to the frontend of The Pulse. 
 
 Testing provided an effective structure, keeping me focussed on one endpoint at a time, and one test at a time, always building out from the simplest test cases first.
 
@@ -31,7 +31,7 @@ Testing provided an effective structure, keeping me focussed on one endpoint at 
 
 I enjoyed using bcrypt to hash the passwords because security is an area I've always been interested in. Being able to successfully hash passwords in this project as an extra feature and understand more of how passwords are kept secure was really satisfying.
 
-## Technology
+## Techstack
 
 . PSQL  
 . JavaScript  

@@ -4,6 +4,7 @@ const testData = require('../db/data/test-data/index.js');
 const app = require('../app.js');
 const  seed  = require('../db/seeds/seed.js');
 
+//TODO remove/update this ridiculously large test file
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
 
