@@ -12,13 +12,12 @@ const ENV = process.env.ENV || 'development';
 const config =
   ENV === 'production'
     ? {
-        connectionString: process.env.EXTERNAL_DATABASE_URL,
+        connectionString: process.env.DATABASE_URL,
         ssl: {
           rejectUnauthorized: false,
         },
       }
     : {};
 
-console.log('CONFIG: ', config);
 module.exports = new Pool(config);
 
