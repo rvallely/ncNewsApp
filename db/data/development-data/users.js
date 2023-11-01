@@ -24,21 +24,21 @@ module.exports = [
     username: 'HometownExplorer',
     email: 'hometownwanderer@email.com',
     avatar_url:
-      'https://vignette.wikia.nocookie.net/mrmen/images/1/1a/MR_MESSY_4A.jpg/revision/latest/scale-to-width-down/250?cb=20170730171002', 
+      'src/assets/avatar_icons/bearded_man.png', 
     password: '$2b$10$QNOC3YvzTtwechpZUKBo7Oxz9x3SPd2YPjLJo46qLsV7GXYmkAvwC'
   },
   {
     username: 'DailyRitualist',
     email: 'morningzen@email.com',
     avatar_url:
-      'https://vignette.wikia.nocookie.net/mrmen/images/7/7e/MrMen-Bump.png/revision/latest?cb=20180123225553', 
+      'src/assets/avatar_icons/bearded_man.png', 
     password: '$2b$10$vtj1fIsRE/ZOvy/I8AOj4evGU.Bn2zLCoN1XCXhwGJGPisnEcAt/q'
   },
   {
     username: '',
     email: '',
     avatar_url:
-      'https://vignette.wikia.nocookie.net/mrmen/images/4/4f/MR_JELLY_4A.jpg/revision/latest?cb=20180104121141', 
+      'src/assets/avatar_icons/bearded_man.png', 
     password: '$2b$10$UE2wG8RXQlEhckwrn7yKXueXpbGxoyK1kJFG6/yC4P.08rgS.oop6'
   }
 ];
