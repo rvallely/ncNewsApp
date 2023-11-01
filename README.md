@@ -13,7 +13,7 @@ This repository:
 
 I wanted to bring together everything I had learned on the backend section of the Northcoders bootcamp and develop my skills further. My main aim was to build strong and well tested endpoints and get comfortable writing code using the 'Model, View, Controller' pattern.
 
-The hosted API of this back-end project: TODO: updatehttps://rosie-nc-news-app.herokuapp.com/api. 
+The hosted API of this back-end project: https://the-pulse-dbf9.onrender.com/api. 
 
 Using the endpoints and the 'queries' and 'params' listed for each endpoint on the hosted API, you can change the URL and access data in the database.  
   
